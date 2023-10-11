@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_akhir2/components/CustomButton.dart';
-import 'package:tugas_akhir2/components/Trafic.dart';
+import 'package:tugas_akhir2/widget/CustomButton.dart';
+import 'package:tugas_akhir2/widget/Trafic.dart';
 
 void main() {
   runApp(const MyApp());
