@@ -118,7 +118,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 const SizedBox(height: 10.0),
                 GestureDetector(
                   onTap: () {
-                    // Navigasi ke halaman login ketika tautan "Sudah punya akun?" ditekan
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -232,7 +231,6 @@ class _LoginPageState extends State<LoginPage> {
                 if (isLoggedIn) const SizedBox(height: 10.0),
                 GestureDetector(
                   onTap: () {
-                    // Navigasi ke halaman pendaftaran ketika tautan "Belum punya akun?" ditekan
                     Navigator.push(
                       context,
                       MaterialPageRoute(
