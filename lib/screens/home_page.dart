@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tugas_akhir2/widget/CustomButton.dart';
 import 'package:tugas_akhir2/widget/Trafic.dart';
+import 'package:tugas_akhir2/screens/calender_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -86,6 +87,10 @@ class HomeScreen extends StatelessWidget {
     } else if (page == 'Pengajuan Cuti') {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => const PengajuanCutiScreen(),
+      ));
+    } else if (page == 'Kalender') {
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => const CalendarScreen(),
       ));
     }
   }
@@ -231,11 +236,7 @@ class CalendarScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Halaman Calendar'),
-      ),
-    );
+    return const Scaffold(body: CalenderScreen());
   }
 }
 
