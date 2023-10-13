@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_akhir2/screens/home_page.dart';
+import 'package:tugas_akhir2/screens/home_page_screen.dart';
 
 void main() {
   runApp(const MyApp());
