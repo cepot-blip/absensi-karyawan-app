@@ -25,6 +25,9 @@ flutter:
     - assets/images/slide1.png
     - assets/images/slide2.png
     - assets/images/slide3.png
+    - assets/images/absen.png
+    - assets/images/absen2.png
+    - assets/images/cuti.png
 
   uses-material-design: true
   # example:

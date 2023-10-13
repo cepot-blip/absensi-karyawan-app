@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tugas_akhir2/screens/absen_keluar_screen.dart';
+import 'package:tugas_akhir2/screens/absen_masuk_screen.dart';
+import 'package:tugas_akhir2/screens/pengajuan_cuti_screen.dart';
 import 'package:tugas_akhir2/widget/CustomButton.dart';
 import 'package:tugas_akhir2/widget/Trafic.dart';
 import 'package:tugas_akhir2/screens/calender_screen.dart';
@@ -188,14 +191,7 @@ class AbsenMasukScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Absen Masuk'),
-      ),
-      body: const Center(
-        child: Text('Halaman Absen Masuk'),
-      ),
-    );
+    return const Scaffold(body: AbsensiMasukScreen());
   }
 }
 
@@ -204,13 +200,8 @@ class AbsenKeluarScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Absen Keluar'),
-      ),
-      body: const Center(
-        child: Text('Halaman Absen Keluar'),
-      ),
+    return const Scaffold(
+      body: AbsensiKeluarScreen(),
     );
   }
 }
@@ -220,13 +211,8 @@ class PengajuanCutiScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Pengajuan Cuti'),
-      ),
-      body: const Center(
-        child: Text('Halaman Pengajuan Cuti'),
-      ),
+    return const Scaffold(
+      body: PengajuanCuti(),
     );
   }
 }
