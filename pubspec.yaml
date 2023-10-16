@@ -1,11 +1,11 @@
 name: tugas_akhir2
 description: A new Flutter project.
-publish_to: "none"
+publish_to: 'none'
 
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.1.2 <4.0.0"
+  sdk: '>=3.1.2 <4.0.0'
 
 dependencies:
   table_calendar: ^3.0.9
@@ -18,7 +18,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^2.0.0
+  flutter_lints: ^2.0.3
 
 flutter:
   assets:

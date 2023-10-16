@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_akhir2/screens/absen_keluar_screen.dart';
-import 'package:tugas_akhir2/screens/absen_masuk_screen.dart';
-import 'package:tugas_akhir2/screens/account_screen.dart';
-import 'package:tugas_akhir2/screens/pengajuan_cuti_screen.dart';
 import 'package:tugas_akhir2/widget/CustomButton.dart';
 import 'package:tugas_akhir2/widget/Trafic.dart';
-import 'package:tugas_akhir2/screens/calender_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -91,14 +86,6 @@ class HomeScreen extends StatelessWidget {
     } else if (page == 'Pengajuan Cuti') {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => const PengajuanCutiScreen(),
-      ));
-    } else if (page == 'Kalender') {
-      Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => const CalendarScreen(),
-      ));
-    } else if (page == 'Akun') {
-      Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => const AccountScreen(),
       ));
     }
   }
@@ -196,43 +183,64 @@ class AbsenMasukScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: AbsensiMasukScreen());
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Absen Masuk'),
+      ),
+      body: const Center(
+        child: Text('Halaman Absen Masuk'),
+      ),
+    );
   }
 }
 
 class AbsenKeluarScreen extends StatelessWidget {
-  const AbsenKeluarScreen({super.key});
+  const AbsenKeluarScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: AbsensiKeluarScreen(),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Absen Keluar'),
+      ),
+      body: const Center(
+        child: Text('Halaman Absen Keluar'),
+      ),
     );
   }
 }
 
 class PengajuanCutiScreen extends StatelessWidget {
-  const PengajuanCutiScreen({super.key});
+  const PengajuanCutiScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: PengajuanCuti(),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Pengajuan Cuti'),
+      ),
+      body: const Center(
+        child: Text('Halaman Pengajuan Cuti'),
+      ),
     );
   }
 }
 
 class CalendarScreen extends StatelessWidget {
-  const CalendarScreen({super.key});
+  const CalendarScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: CalenderScreen());
+    return const Scaffold(
+      body: Center(
+        child: Text('Halaman Calendar'),
+      ),
+    );
   }
 }
 
 class ReportScreen extends StatelessWidget {
-  const ReportScreen({super.key});
+  const ReportScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -245,11 +253,13 @@ class ReportScreen extends StatelessWidget {
 }
 
 class AccountScreen extends StatelessWidget {
-  const AccountScreen({super.key});
+  const AccountScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: AccountScreen());
+    return const Scaffold(
+      body: AccountScreen(),
+    );
   }
 }
 
