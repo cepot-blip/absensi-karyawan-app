@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
-class AccountProfileScreen extends StatefulWidget {
-  const AccountProfileScreen({Key? key}) : super(key: key);
+class AccountScreen extends StatefulWidget {
+  const AccountScreen({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _AccountScreenState createState() => _AccountScreenState();
 }
 
-class _AccountScreenState extends State<AccountProfileScreen> {
+class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,19 +59,6 @@ class _AccountScreenState extends State<AccountProfileScreen> {
                 const ListTile(
                   leading: Icon(Icons.location_on),
                   title: Text('Country'),
-                ),
-                const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: () {
-                    // Tambahkan logika untuk aksi di halaman akun jika diperlukan
-                  },
-                  child: const Text('Edit Profile'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    // Tambahkan logika untuk logout jika diperlukan
-                  },
-                  child: const Text('Logout'),
                 ),
               ],
             ),
