@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tugas_akhir2/screens/absen_keluar_screen.dart';
 import 'package:tugas_akhir2/screens/absen_masuk_screen.dart';
-import 'package:tugas_akhir2/screens/account_screen.dart';
 import 'package:tugas_akhir2/screens/pengajuan_cuti_screen.dart';
+import 'package:tugas_akhir2/screens/report_screen.dart';
 import 'package:tugas_akhir2/widget/CustomButton.dart';
 import 'package:tugas_akhir2/widget/Trafic.dart';
 import 'package:tugas_akhir2/screens/calender_screen.dart';
@@ -236,11 +236,7 @@ class ReportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Halaman Report'),
-      ),
-    );
+    return const Scaffold(body: ReportsScreen());
   }
 }
 
