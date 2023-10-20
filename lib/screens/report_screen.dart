@@ -1,19 +1,47 @@
+// ignore_for_file: camel_case_types, prefer_typing_uninitialized_variables
+
 import 'package:flutter/material.dart';
 
-class ReportsScreen extends StatefulWidget {
-  const ReportsScreen({Key? key}) : super(key: key);
+class ReportScreen extends StatefulWidget {
+  const ReportScreen({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _ReportScreenState createState() => _ReportScreenState();
 }
 
-class _ReportScreenState extends State<ReportsScreen> {
+class _ReportScreenState extends State<ReportScreen> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Dashboard"),
+        actions: const [],
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: [
+              TextFormField(
+                initialValue: 'John Doe',
+                maxLength: 20,
+                decoration: const InputDecoration(
+                  labelText: 'Name',
+                  labelStyle: TextStyle(
+                    color: Colors.blueGrey,
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.blueGrey,
+                    ),
+                  ),
+                  helperText: "What's your name?",
+                ),
+                onChanged: (value) {},
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
