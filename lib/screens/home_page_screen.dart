@@ -18,15 +18,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Homepage',
-      home: HomePage(
-        email: '',
-      ),
+      home: HomePage(currentIndex: 0),
     );
   }
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required String email}) : super(key: key);
+  final int currentIndex;
+
+  const HomePage({Key? key, required this.currentIndex}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -37,11 +37,17 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    const HomeScreen(),
+    const HomeScreen(email: ''),
     const CalendarScreen(),
     const ReportScreen(),
     const AccountScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.currentIndex;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +83,9 @@ class _HomePageState extends State<HomePage> {
 }
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  final String email;
+
+  const HomeScreen({super.key, required this.email});
 
   void navigateToPage(BuildContext context, String page) {
     if (page == 'Absen Masuk') {
