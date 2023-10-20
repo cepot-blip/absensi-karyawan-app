@@ -244,7 +244,7 @@ class ReportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: ReportsScreen());
+    return const Scaffold(body: ReportScreen());
   }
 }
 
