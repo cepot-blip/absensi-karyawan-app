@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class AbsensiKeluarScreen extends StatefulWidget {
-  const AbsensiKeluarScreen({Key? key}) : super(key: key);
+class Absenkeluar extends StatefulWidget {
+  const Absenkeluar({Key? key}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
   _AbsensiKeluarScreenState createState() => _AbsensiKeluarScreenState();
 }
 
-class _AbsensiKeluarScreenState extends State<AbsensiKeluarScreen> {
+class _AbsensiKeluarScreenState extends State<Absenkeluar> {
   String? selectedAction;
 
   void _selectAction(String action) {

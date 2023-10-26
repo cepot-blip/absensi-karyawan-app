@@ -1,32 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:tugas_akhir2/screens/absen_keluar_screen.dart';
 import 'package:tugas_akhir2/screens/absen_masuk_screen.dart';
+import 'package:tugas_akhir2/screens/account_screen.dart';
 import 'package:tugas_akhir2/screens/pengajuan_cuti_screen.dart';
 import 'package:tugas_akhir2/screens/report_screen.dart';
 import 'package:tugas_akhir2/widget/CustomButton.dart';
 import 'package:tugas_akhir2/widget/Trafic.dart';
+import 'package:tugas_akhir2/widget/MyBottomNavigationBar.dart';
 import 'package:tugas_akhir2/screens/calender_screen.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(const MyApp(
+      email: '',
+    ));
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required String email});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Homepage',
-      home: HomePage(currentIndex: 0),
-    );
+    return const MaterialApp(title: 'Homepage', home: HomePage());
   }
 }
 
 class HomePage extends StatefulWidget {
-  final int currentIndex;
+  final int currentIndex = 0;
 
-  const HomePage({Key? key, required this.currentIndex}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -37,10 +36,10 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    const HomeScreen(email: ''),
-    const CalendarScreen(),
-    const ReportScreen(),
-    const AccountScreen(),
+    const HomeScreen(),
+    const CalenderScreen(),
+    const Report(),
+    const Account(),
   ];
 
   @override
@@ -83,30 +82,32 @@ class _HomePageState extends State<HomePage> {
 }
 
 class HomeScreen extends StatelessWidget {
-  final String email;
-
-  const HomeScreen({super.key, required this.email});
+  const HomeScreen({super.key});
 
   void navigateToPage(BuildContext context, String page) {
     if (page == 'Absen Masuk') {
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => const AbsenMasukScreen(),
+        builder: (context) => const Absenmasuk(),
       ));
     } else if (page == 'Absen Keluar') {
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => const AbsenKeluarScreen(),
+        builder: (context) => const Absenkeluar(),
       ));
     } else if (page == 'Pengajuan Cuti') {
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => const PengajuanCutiScreen(),
+        builder: (context) => const PengajuanCuti(),
       ));
     } else if (page == 'Kalender') {
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => const CalendarScreen(),
+        builder: (context) => const CalenderScreen(),
       ));
     } else if (page == 'Akun') {
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => const AccountScreen(),
+        builder: (context) => const Account(),
+      ));
+    } else if (page == 'Akun') {
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => const Report(),
       ));
     }
   }
@@ -160,7 +161,7 @@ class HomeScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const AbsenMasukScreen(),
+                      builder: (context) => const Absenmasuk(),
                     ),
                   );
                 },
@@ -173,7 +174,7 @@ class HomeScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const AbsenKeluarScreen(),
+                      builder: (context) => const Absenkeluar(),
                     ),
                   );
                 },
@@ -186,7 +187,7 @@ class HomeScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const PengajuanCutiScreen(),
+                      builder: (context) => const PengajuanCuti(),
                     ),
                   );
                 },
@@ -195,103 +196,6 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class AbsenMasukScreen extends StatelessWidget {
-  const AbsenMasukScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(body: AbsensiMasukScreen());
-  }
-}
-
-class AbsenKeluarScreen extends StatelessWidget {
-  const AbsenKeluarScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: AbsensiKeluarScreen(),
-    );
-  }
-}
-
-class PengajuanCutiScreen extends StatelessWidget {
-  const PengajuanCutiScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: PengajuanCuti(),
-    );
-  }
-}
-
-class CalendarScreen extends StatelessWidget {
-  const CalendarScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(body: CalenderScreen());
-  }
-}
-
-class ReportScreen extends StatelessWidget {
-  const ReportScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(body: ReportScreen());
-  }
-}
-
-class AccountScreen extends StatelessWidget {
-  const AccountScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(body: AccountScreen());
-  }
-}
-
-class MyBottomNavigationBar extends StatelessWidget {
-  final int currentIndex;
-  final Function(int) onTap;
-
-  const MyBottomNavigationBar({
-    super.key,
-    required this.currentIndex,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      selectedItemColor: Colors.blue,
-      unselectedItemColor: Colors.grey[600],
-      currentIndex: currentIndex,
-      onTap: onTap,
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.calendar_today),
-          label: 'Calendar',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.report),
-          label: 'Report',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.account_circle),
-          label: 'Akun',
-        ),
-      ],
     );
   }
 }

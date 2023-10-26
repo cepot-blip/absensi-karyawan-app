@@ -1,65 +1,121 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 
-class AccountScreen extends StatefulWidget {
-  const AccountScreen({Key? key}) : super(key: key);
+class Account extends StatefulWidget {
+  const Account({Key? key}) : super(key: key);
 
   @override
-  _AccountScreenState createState() => _AccountScreenState();
+  State<Account> createState() => _AccountScreenState();
 }
 
-class _AccountScreenState extends State<AccountScreen> {
+class _AccountScreenState extends State<Account> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Container(
-          width: 370,
           padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.3),
-                spreadRadius: 3,
-                blurRadius: 7,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
           child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const CircleAvatar(
-                  child: Icon(
-                    Icons.person,
-                    size: 40,
+                  radius: 60,
+                  backgroundImage: AssetImage('assets/images/pzn.png'),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                const Divider(
+                  height: 1,
+                  color: Colors.grey,
+                ),
+                Center(
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                    child: ListTile(
+                      leading: const Icon(Icons.person),
+                      title: RichText(
+                        text: const TextSpan(
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: 'Nama :  ',
+                              style:
+                                  TextStyle(fontSize: 14, color: Colors.grey),
+                            ),
+                            TextSpan(
+                              text: 'Jenal',
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.black),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Name',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                const Divider(
+                  height: 1,
+                  color: Colors.grey,
                 ),
-                const Text(
-                  'Position',
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                Center(
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                    child: ListTile(
+                      leading: const Icon(Icons.work),
+                      title: RichText(
+                        text: const TextSpan(
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: 'Position :  ',
+                              style:
+                                  TextStyle(fontSize: 14, color: Colors.grey),
+                            ),
+                            TextSpan(
+                              text: 'Security Engineer',
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.black),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-                const SizedBox(height: 24),
-                const ListTile(
-                  leading: Icon(Icons.email),
-                  title: Text('Email'),
+                const Divider(
+                  height: 1,
+                  color: Colors.grey,
                 ),
-                const ListTile(
-                  leading: Icon(Icons.phone),
-                  title: Text('Phone'),
+                Center(
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                    child: ListTile(
+                      leading: const Icon(Icons.location_on),
+                      title: RichText(
+                        text: const TextSpan(
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: 'Country :  ',
+                              style:
+                                  TextStyle(fontSize: 14, color: Colors.grey),
+                            ),
+                            TextSpan(
+                              text: 'Indonesia',
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.black),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-                const ListTile(
-                  leading: Icon(Icons.location_on),
-                  title: Text('Country'),
-                ),
+                const Divider(
+                  height: 1,
+                  color: Colors.grey,
+                )
               ],
             ),
           ),
