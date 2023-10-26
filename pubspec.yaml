@@ -29,6 +29,7 @@ flutter:
     - assets/images/absen.png
     - assets/images/absen2.png
     - assets/images/cuti.png
+    - assets/images/pzn.png
 
   uses-material-design: true
   # example:
