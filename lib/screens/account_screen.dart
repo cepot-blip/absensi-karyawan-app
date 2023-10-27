@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../api/account_api.dart';
 
 class Account extends StatefulWidget {
   const Account({Key? key}) : super(key: key);
@@ -8,6 +9,29 @@ class Account extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<Account> {
+  final AccountApi _accountApi = AccountApi();
+
+  String nama = '';
+  String jabatan = '';
+  String telepon = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserInfo();
+  }
+
+  void _loadUserInfo() async {
+    final userInfo = await _accountApi.getUserInfo();
+    if (userInfo != null) {
+      setState(() {
+        nama = userInfo['fullname'];
+        jabatan = userInfo['jabatan'];
+        telepon = userInfo['telepon'];
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,22 +55,24 @@ class _AccountScreenState extends State<Account> {
                 ),
                 Center(
                   child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 10,
+                    ),
                     child: ListTile(
                       leading: const Icon(Icons.person),
                       title: RichText(
-                        text: const TextSpan(
+                        text: TextSpan(
                           children: <TextSpan>[
-                            TextSpan(
+                            const TextSpan(
                               text: 'Nama :  ',
                               style:
                                   TextStyle(fontSize: 14, color: Colors.grey),
                             ),
                             TextSpan(
-                              text: 'Jenal',
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.black),
+                              text: nama,
+                              style: const TextStyle(
+                                  fontSize: 16, color: Colors.black),
                             ),
                           ],
                         ),
@@ -60,22 +86,24 @@ class _AccountScreenState extends State<Account> {
                 ),
                 Center(
                   child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 10,
+                    ),
                     child: ListTile(
                       leading: const Icon(Icons.work),
                       title: RichText(
-                        text: const TextSpan(
+                        text: TextSpan(
                           children: <TextSpan>[
-                            TextSpan(
-                              text: 'Position :  ',
+                            const TextSpan(
+                              text: 'Jabatan :  ',
                               style:
                                   TextStyle(fontSize: 14, color: Colors.grey),
                             ),
                             TextSpan(
-                              text: 'Security Engineer',
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.black),
+                              text: jabatan,
+                              style: const TextStyle(
+                                  fontSize: 16, color: Colors.black),
                             ),
                           ],
                         ),
@@ -89,22 +117,24 @@ class _AccountScreenState extends State<Account> {
                 ),
                 Center(
                   child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 10,
+                    ),
                     child: ListTile(
                       leading: const Icon(Icons.location_on),
                       title: RichText(
-                        text: const TextSpan(
+                        text: TextSpan(
                           children: <TextSpan>[
-                            TextSpan(
-                              text: 'Country :  ',
+                            const TextSpan(
+                              text: 'Telepon :  ',
                               style:
                                   TextStyle(fontSize: 14, color: Colors.grey),
                             ),
                             TextSpan(
-                              text: 'Indonesia',
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.black),
+                              text: telepon,
+                              style: const TextStyle(
+                                  fontSize: 16, color: Colors.black),
                             ),
                           ],
                         ),

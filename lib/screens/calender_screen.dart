@@ -4,9 +4,9 @@ import 'package:intl/intl.dart';
 
 class Event {
   final String title;
-  final String description;
+  final String content;
 
-  Event(this.title, this.description);
+  Event(this.title, this.content);
 }
 
 class CalenderScreen extends StatefulWidget {
@@ -20,7 +20,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   final TextEditingController _eventController = TextEditingController();
-  String _eventTime = ''; // Variabel untuk menyimpan waktu acara
+  String _eventTime = '';
   Map<DateTime, List<Event>> events = {};
   late final ValueNotifier<List<Event>> _selectedEvents;
 
@@ -45,8 +45,9 @@ class _CalenderScreenState extends State<CalenderScreen> {
     return events[day] ?? [];
   }
 
-  String _extractTime(String eventDescription) {
-    final List<String> lines = eventDescription.split('\n');
+  // ignore: unused_element
+  String _extractTime(String eventcontent) {
+    final List<String> lines = eventcontent.split('\n');
     for (String line in lines) {
       if (line.startsWith('Jam: ')) {
         return line.substring(5);
@@ -126,14 +127,14 @@ class _CalenderScreenState extends State<CalenderScreen> {
                           },
                         );
                       } else {
-                        final String eventDescription =
+                        final String eventcontent =
                             'Nama Acara: ${_eventController.text}\nJam: $_eventTime';
                         if (events.containsKey(_selectedDay!)) {
                           events[_selectedDay!]!
-                              .add(Event("Event Title", eventDescription));
+                              .add(Event("Event Title", eventcontent));
                         } else {
                           events[_selectedDay!] = [
-                            Event("Event Title", eventDescription)
+                            Event("Event Title", eventcontent)
                           ];
                         }
                         _eventController.clear();
@@ -211,7 +212,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(value[index].description),
+                                      Text(value[index].content),
                                     ],
                                   ),
                                 );
@@ -219,7 +220,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                             );
                           },
                           title: Text(
-                            value[index].description,
+                            value[index].content,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                             selectionColor: Colors.blue,
                           )),
