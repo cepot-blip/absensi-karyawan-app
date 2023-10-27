@@ -19,7 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String errorMessage = '';
 
-  bool _obscureText = true; // Untuk mengatur apakah password tersembunyi
+  bool _obscureText = true;
 
   void login() async {
     if (_formKey.currentState!.validate()) {
