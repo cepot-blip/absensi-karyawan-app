@@ -1,71 +1,32 @@
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-class UserApi {
-  final String baseUrl = 'http://localhost:9000/api/users';
+class RegisterApi {
+  final String baseUrl = 'https://7c70-103-175-225-77.ngrok-free.app/api/users';
 
-  Future<Map<String, dynamic>?> registerUser(
-      String email, String password) async {
+  Future<bool> registerUser(
+    String email,
+    String password,
+    String fullname,
+    String jabatan,
+    String telepon,
+  ) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/create'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode({'email': email, 'password': password}),
+        body: jsonEncode({
+          'email': email,
+          'password': password,
+          'fullname': fullname,
+          'jabatan': jabatan,
+          'telepon': telepon,
+        }),
       );
 
       if (response.statusCode == 201) {
-        final Map<String, dynamic> data = jsonDecode(response.body);
-        return data;
-      } else {
-        throw Exception('Failed to create user.');
-      }
-    } catch (e) {
-      return null;
-    }
-  }
-
-  Future<Map<String, dynamic>?> loginUser(String email, String password) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/login'),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({'email': email, 'password': password}),
-    );
-
-    if (response.statusCode == 201) {
-      final Map<String, dynamic> data = jsonDecode(response.body);
-      return data;
-    } else {
-      return null;
-    }
-  }
-
-  Future<Map<String, dynamic>?> getUserById(int userId) async {
-    final response = await http.get(Uri.parse('$baseUrl/$userId'));
-
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = jsonDecode(response.body);
-      return data;
-    } else {
-      return null;
-    }
-  }
-
-  Future<bool> updateUser(
-      int userId, Map<String, dynamic> updatedUserData) async {
-    try {
-      final response = await http.put(
-        Uri.parse('$baseUrl/$userId'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(updatedUserData),
-      );
-
-      if (response.statusCode == 200) {
         return true;
       } else {
         return false;
@@ -74,12 +35,25 @@ class UserApi {
       return false;
     }
   }
+}
 
-  Future<bool> deleteUser(int userId) async {
+class LoginApi {
+  final String baseUrl = 'https://7c70-103-175-225-77.ngrok-free.app/api/users';
+
+  Future<bool> loginUser(String email, String password) async {
     try {
-      final response = await http.delete(Uri.parse('$baseUrl/$userId'));
+      final response = await http.post(
+        Uri.parse('$baseUrl/login'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          'email': email,
+          'password': password,
+        }),
+      );
 
-      if (response.statusCode == 204) {
+      if (response.statusCode == 201) {
         return true;
       } else {
         return false;

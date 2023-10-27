@@ -1,11 +1,9 @@
-// ignore_for_file: use_build_context_synchronously
-// import 'package:http/http.dart' as http;
-// import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:tugas_akhir2/screens/login_screen.dart';
+import 'package:tugas_akhir2/api/user_api.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+  const RegisterScreen({Key? key}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -16,73 +14,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String email = '';
   String password = '';
-  bool isRegistered = false;
+  String fullname = '';
+  String jabatan = '';
+  String telepon = '';
 
-  // Future<void> registerUser() async {
-  //   if (_formKey.currentState!.validate()) {
-  //     final response = await http.post(
-  //       Uri.parse('http://localhost:9000/api/users/create'),
-  //       body: {
-  //         'email': email,
-  //         'password': password,
-  //       },
-  //     );
-
-  //     if (response.statusCode == 201) {
-  //       final responseData = json.decode(response.body);
-  //       final message = responseData['message'];
-
-  //       showDialog(
-  //         context: context,
-  //         builder: (context) {
-  //           return AlertDialog(
-  //             title: const Text('Registrasi Berhasil'),
-  //             content: Text(message),
-  //             actions: [
-  //               TextButton(
-  //                 onPressed: () {
-  //                   Navigator.pop(context);
-  //                   Navigator.push(
-  //                     context,
-  //                     MaterialPageRoute(
-  //                       builder: (context) => const LoginScreen(),
-  //                     ),
-  //                   );
-  //                 },
-  //                 child: const Text('Tutup'),
-  //               ),
-  //             ],
-  //           );
-  //         },
-  //       );
-  //     } else {
-  //       showDialog(
-  //         context: context,
-  //         builder: (context) {
-  //           return AlertDialog(
-  //             title: const Text('Registrasi Gagal'),
-  //             content: const Text('Registrasi gagal. Silakan coba lagi.'),
-  //             actions: [
-  //               TextButton(
-  //                 onPressed: () {
-  //                   Navigator.pop(context);
-  //                 },
-  //                 child: const Text('Tutup'),
-  //               ),
-  //             ],
-  //           );
-  //         },
-  //       );
-  //     }
-  //   }
-  // }
-
-  void register() {
+  Future<bool> register() async {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        isRegistered = true;
-      });
+      final registerApi = RegisterApi();
+      final registeredUser = await registerApi.registerUser(
+        email,
+        password,
+        fullname,
+        jabatan,
+        telepon,
+      );
+
+      if (registeredUser) {
+        setState(() {
+          isRegistered = true;
+        });
+
+        return true;
+      } else {
+        return false;
+      }
     }
+    return false;
+  }
+
+  bool isRegistered = false;
+  bool _isPasswordHidden = true;
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _isPasswordHidden = !_isPasswordHidden;
+    });
   }
 
   @override
@@ -91,102 +57,189 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(
         title: const Text('Register Page'),
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'Register',
-                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 20.0),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Email'),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Email tidak boleh kosong';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      email = value;
-                    });
-                  },
-                ),
-                const SizedBox(height: 10.0),
-                TextFormField(
-                  obscureText: true,
-                  decoration: const InputDecoration(labelText: 'Password'),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Password tidak boleh kosong';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      password = value;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20.0),
-                ElevatedButton(
-                  onPressed: () {
-                    register();
-                    if (isRegistered) {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: const Text('Registrasi Berhasil'),
-                            content:
-                                const Text('Anda telah berhasil terdaftar.'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  // Tambahkan ini untuk menavigasi ke layar login.
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const LoginScreen(),
-                                    ),
-                                  );
-                                },
-                                child: const Text('Tutup'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    }
-                  },
-                  child: const Text('Register'),
-                ),
-                const SizedBox(height: 10.0),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Register',
+                    style:
+                        TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 20.0),
+                  TextFormField(
+                    decoration: const InputDecoration(labelText: 'Full Name'),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Nama lengkap tidak boleh kosong';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        fullname = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 10.0),
+                  TextFormField(
+                    decoration: const InputDecoration(labelText: 'Jabatan'),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Jabatan tidak boleh kosong';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        jabatan = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 10.0),
+                  TextFormField(
+                    decoration: const InputDecoration(labelText: 'Telepon'),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Nomor telepon tidak boleh kosong';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        telepon = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 10.0),
+                  TextFormField(
+                    decoration: const InputDecoration(labelText: 'Email'),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Email tidak boleh kosong';
+                      } else if (!value.contains('@gmail.com')) {
+                        return 'Email harus mengandung tanda @gmail.com';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        email = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 10.0),
+                  TextFormField(
+                    obscureText: _isPasswordHidden,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordHidden
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.grey,
+                        ),
+                        onPressed: _togglePasswordVisibility,
                       ),
-                    );
-                  },
-                  child: const Text(
-                    'Sudah punya akun? Login di sini',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      decoration: TextDecoration.underline,
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Password tidak boleh kosong';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        password = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 30.0),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final result = await register();
+                      if (result) {
+                        // ignore: use_build_context_synchronously
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Registrasi Berhasil'),
+                              content:
+                                  const Text('Anda telah berhasil terdaftar.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const LoginScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text('Tutup'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } else {
+                        // ignore: use_build_context_synchronously
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Registrasi Gagal'),
+                              content: const Text(
+                                  'Terjadi kesalahan saat mendaftar.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('Tutup'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
+                    child: const SizedBox(
+                      width: double.infinity,
+                      child: Center(
+                        child: Text('Register'),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 10.0),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Sudah punya akun? Login di sini',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
