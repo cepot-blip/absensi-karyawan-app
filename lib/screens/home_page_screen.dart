@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tugas_akhir2/screens/absen_keluar_screen.dart';
 import 'package:tugas_akhir2/screens/absen_masuk_screen.dart';
 import 'package:tugas_akhir2/screens/account_screen.dart';
+import 'package:tugas_akhir2/screens/login_screen.dart';
 import 'package:tugas_akhir2/screens/pengajuan_cuti_screen.dart';
 import 'package:tugas_akhir2/screens/report_screen.dart';
 import 'package:tugas_akhir2/widget/CustomButton.dart';
@@ -9,22 +10,23 @@ import 'package:tugas_akhir2/widget/Trafic.dart';
 import 'package:tugas_akhir2/widget/MyBottomNavigationBar.dart';
 import 'package:tugas_akhir2/screens/calender_screen.dart';
 
-void main() => runApp(const MyApp(
-      email: '',
-    ));
+void main() {
+  runApp(const MyApp(email: ''));
+}
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required String email});
+  const MyApp({Key? key, required String email}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(title: 'Homepage', home: HomePage());
+    return const MaterialApp(
+      title: 'Homepage',
+      home: HomePage(),
+    );
   }
 }
 
 class HomePage extends StatefulWidget {
-  final int currentIndex = 0;
-
   const HomePage({Key? key}) : super(key: key);
 
   @override
@@ -34,37 +36,36 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
+  late AppBar homeAppBar;
 
-  final List<Widget> _pages = [
-    const HomeScreen(),
-    const CalenderScreen(),
-    const Report(),
-    const Account(),
+  final List<Widget> _pages = const [
+    HomeScreen(),
+    CalenderScreen(),
+    Report(),
+    Account(),
   ];
 
   @override
   void initState() {
     super.initState();
-    _currentIndex = widget.currentIndex;
+    homeAppBar = AppBar(
+      title: const Text('Selamat Datang'),
+      leading: IconButton(
+        icon: const Icon(Icons.menu),
+        onPressed: () {
+          _scaffoldKey.currentState?.openDrawer();
+        },
+      ),
+    );
   }
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Selamat Datang'),
-        actions: const [
-          Row(
-            children: [
-              Text(
-                'Ipul',
-                style: TextStyle(fontWeight: FontWeight.normal),
-              ),
-              Icon(Icons.notifications),
-            ],
-          ),
-        ],
-      ),
+      key: _scaffoldKey,
+      appBar: _currentIndex == 0 ? homeAppBar : null,
       body: IndexedStack(
         index: _currentIndex,
         children: _pages,
@@ -77,12 +78,67 @@ class _HomePageState extends State<HomePage> {
           });
         },
       ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            const UserAccountsDrawerHeader(
+              accountName: Text('Mprooy Ganteng'),
+              accountEmail: Text('Mprooy@gmail.com'),
+              currentAccountPicture: CircleAvatar(
+                radius: 60,
+                backgroundImage: AssetImage('assets/images/pzn.png'),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text('Profil'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Account()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.calendar_today),
+              title: const Text('Calendar'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const CalenderScreen()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.insert_chart),
+              title: const Text('Report'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Report()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.exit_to_app),
+              title: const Text('Log Out'),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()));
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({Key? key}) : super(key: key);
 
   void navigateToPage(BuildContext context, String page) {
     if (page == 'Absen Masuk') {
@@ -105,7 +161,7 @@ class HomeScreen extends StatelessWidget {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => const Account(),
       ));
-    } else if (page == 'Akun') {
+    } else if (page == 'Report') {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => const Report(),
       ));
@@ -121,10 +177,10 @@ class HomeScreen extends StatelessWidget {
           const Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Trafict(iconData: Icons.check, count: 2, label: 'Hadir'),
+              Trafict(iconData: Icons.check, count: 0, label: 'Hadir'),
               Trafict(
                 iconData: Icons.local_hospital,
-                count: 5,
+                count: 0,
                 label: 'Sakit',
               ),
             ],
@@ -135,10 +191,10 @@ class HomeScreen extends StatelessWidget {
             children: [
               Trafict(
                 iconData: Icons.error,
-                count: 1,
+                count: 0,
                 label: 'Izin',
               ),
-              Trafict(iconData: Icons.beach_access, count: 4, label: 'Cuti'),
+              Trafict(iconData: Icons.beach_access, count: 0, label: 'Cuti'),
             ],
           ),
           const SizedBox(height: 20.0),
@@ -156,40 +212,28 @@ class HomeScreen extends StatelessWidget {
               CustomButton(
                 iconData: Icons.login,
                 label: 'Absen Masuk',
-                buttonColor: Colors.blue,
+                buttonColor: Colors.green,
+                iconColor: Colors.white,
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const Absenmasuk(),
-                    ),
-                  );
+                  navigateToPage(context, 'Absen Masuk');
                 },
               ),
               CustomButton(
                 iconData: Icons.logout,
                 label: 'Absen Keluar',
-                buttonColor: Colors.blue,
+                buttonColor: Colors.red,
+                iconColor: Colors.white,
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const Absenkeluar(),
-                    ),
-                  );
+                  navigateToPage(context, 'Absen Keluar');
                 },
               ),
               CustomButton(
                 iconData: Icons.send,
                 label: 'Pengajuan Cuti',
                 buttonColor: Colors.blue,
+                iconColor: Colors.white,
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const PengajuanCuti(),
-                    ),
-                  );
+                  navigateToPage(context, 'Pengajuan Cuti');
                 },
               ),
             ],
