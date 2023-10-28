@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tugas_akhir2/screens/home_page_screen.dart';
 import '../api/account_api.dart';
 
 class Account extends StatefulWidget {
@@ -35,6 +36,18 @@ class _AccountScreenState extends State<Account> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Profile"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            );
+          },
+        ),
+      ),
       body: Center(
         child: Container(
           padding: const EdgeInsets.all(16),
@@ -122,7 +135,7 @@ class _AccountScreenState extends State<Account> {
                       vertical: 10,
                     ),
                     child: ListTile(
-                      leading: const Icon(Icons.location_on),
+                      leading: const Icon(Icons.call),
                       title: RichText(
                         text: TextSpan(
                           children: <TextSpan>[
