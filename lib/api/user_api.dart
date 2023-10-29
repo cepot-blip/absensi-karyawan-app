@@ -53,7 +53,7 @@ class LoginApi {
         }),
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         return true;
       } else {
         return false;
