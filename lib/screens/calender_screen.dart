@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:intl/intl.dart';
+import 'package:tugas_akhir2/screens/home_page_screen.dart';
+
+class Event {
+  final String title;
+  final String content;
+
+  Event(this.title, this.content);
+}
 
 class CalenderScreen extends StatefulWidget {
   const CalenderScreen({Key? key}) : super(key: key);
@@ -9,21 +18,271 @@ class CalenderScreen extends StatefulWidget {
 }
 
 class _CalenderScreenState extends State<CalenderScreen> {
-  DateTime today = DateTime.now();
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedDay;
+  final TextEditingController _eventController = TextEditingController();
+  String _eventTime = '';
+  Map<DateTime, List<Event>> events = {};
+  late final ValueNotifier<List<Event>> _selectedEvents;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDay = _focusedDay;
+    _selectedEvents = ValueNotifier(_getEventForDay(_selectedDay!));
+  }
+
+  void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+    if (!isSameDay(_selectedDay, selectedDay)) {
+      setState(() {
+        _selectedDay = selectedDay;
+        _focusedDay = focusedDay;
+        _selectedEvents.value = _getEventForDay(selectedDay);
+      });
+    }
+  }
+
+  List<Event> _getEventForDay(DateTime day) {
+    return events[day] ?? [];
+  }
+
+  // ignore: unused_element
+  String _extractTime(String eventcontent) {
+    final List<String> lines = eventcontent.split('\n');
+    for (String line in lines) {
+      if (line.startsWith('Jam: ')) {
+        return line.substring(5);
+      }
+    }
+    return '';
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TableCalendar(
-          headerStyle: const HeaderStyle(
-              formatButtonVisible: false, titleCentered: true),
-          availableGestures: AvailableGestures.all,
-          focusedDay: today,
-          firstDay: DateTime(2010, 10, 16),
-          lastDay: DateTime(2050, 10, 16),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Kalender Karyawan"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            );
+          },
         ),
-      ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                scrollable: true,
+                title: const Text("Tambah Acara"),
+                content: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: TextField(
+                        controller: _eventController,
+                        decoration:
+                            const InputDecoration(labelText: 'Nama Acara'),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Row(
+                        children: [
+                          const Text('Pilih Jam: '),
+                          ElevatedButton(
+                            onPressed: () async {
+                              final TimeOfDay? selectedTime =
+                                  await showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay.now(),
+                              );
+                              if (selectedTime != null) {
+                                final String formattedTime =
+                                    '${selectedTime.hour}:${selectedTime.minute}';
+                                setState(() {
+                                  _eventTime = formattedTime;
+                                });
+                              }
+                            },
+                            child: const Text('Pilih Jam'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                actions: [
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_eventController.text.isEmpty || _eventTime.isEmpty) {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text("Kesalahan"),
+                              content: const Text(
+                                  'Nama acara dan waktu tidak boleh kosong.'),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text("OK"),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } else {
+                        final String eventcontent =
+                            'Nama Acara: ${_eventController.text}\nJam: $_eventTime';
+                        if (events.containsKey(_selectedDay!)) {
+                          events[_selectedDay!]!
+                              .add(Event("Event Title", eventcontent));
+                        } else {
+                          events[_selectedDay!] = [
+                            Event("Event Title", eventcontent)
+                          ];
+                        }
+                        _eventController.clear();
+                        _eventTime = '';
+                        Navigator.of(context).pop();
+                        _selectedEvents.value = _getEventForDay(_selectedDay!);
+                      }
+                    },
+                    child: const Text("Konfirmasi"),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        mini: true,
+        child: const Icon(Icons.add),
+      ),
+      body: Column(
+        children: [
+          TableCalendar(
+            headerStyle: const HeaderStyle(
+              formatButtonVisible: false,
+              titleCentered: true,
+              titleTextStyle: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+              ),
+            ),
+            availableGestures: AvailableGestures.all,
+            eventLoader: _getEventForDay,
+            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+            focusedDay: _focusedDay,
+            firstDay: DateTime(2010, 10, 16),
+            lastDay: DateTime(2050, 10, 16),
+            onDaySelected: _onDaySelected,
+            calendarStyle: CalendarStyle(
+              todayDecoration: const BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.circle,
+              ),
+              selectedDecoration: BoxDecoration(
+                color: Colors.blue.shade200,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Expanded(
+            child: ValueListenableBuilder(
+              valueListenable: _selectedEvents,
+              builder: (context, value, _) {
+                return ListView.builder(
+                  itemCount: value.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
+                      color: Colors.blue[300],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 4,
+                      child: ListTile(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text("Detail Acara"),
+                                  content: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(value[index].content),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          title: Text(
+                            value[index].content,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                            selectionColor: Colors.blue,
+                          )),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class DigitalClockWidget extends StatefulWidget {
+  const DigitalClockWidget({Key? key}) : super(key: key);
+
+  @override
+  State<DigitalClockWidget> createState() => _DigitalClockWidgetState();
+}
+
+class _DigitalClockWidgetState extends State<DigitalClockWidget> {
+  String _formattedTime = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _updateTime();
+  }
+
+  void _updateTime() {
+    final String formattedTime = DateFormat.jm().format(DateTime.now());
+    setState(() {
+      _formattedTime = formattedTime;
+    });
+
+    Future.delayed(const Duration(seconds: 1), _updateTime);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      _formattedTime,
+      style: const TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w300,
+        color: Colors.blue,
+      ),
     );
   }
 }

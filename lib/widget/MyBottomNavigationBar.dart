@@ -27,7 +27,7 @@ class MyBottomNavigationBar extends StatelessWidget {
           label: 'Calendar',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.report),
+          icon: Icon(Icons.insert_chart),
           label: 'Report',
         ),
         BottomNavigationBarItem(

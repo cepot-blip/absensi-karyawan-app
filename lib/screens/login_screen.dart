@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tugas_akhir2/api/user_api.dart';
 import 'package:tugas_akhir2/screens/home_page_screen.dart';
 import 'package:tugas_akhir2/screens/register_screen.dart';
-// import 'package:tugas_akhir2/api/user_api.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -17,12 +17,41 @@ class _LoginScreenState extends State<LoginScreen> {
   String password = '';
   bool isLoggedIn = false;
 
-  void login() {
+  String errorMessage = '';
+
+  bool _obscureText = true;
+
+  void login() async {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        isLoggedIn = true;
-      });
+      final loginApi = LoginApi();
+      final result = await loginApi.loginUser(email, password);
+
+      if (result) {
+        setState(() {
+          isLoggedIn = true;
+        });
+
+        if (isLoggedIn) {
+          // ignore: use_build_context_synchronously
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const HomePage(),
+            ),
+          );
+        }
+      } else {
+        setState(() {
+          errorMessage = 'Email atau password salah';
+        });
+      }
     }
+  }
+
+  void togglePasswordVisibility() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
   }
 
   @override
@@ -49,6 +78,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Email tidak boleh kosong';
+                    } else if (!value.contains('@gmail.com')) {
+                      return 'Email harus mengandung tanda @gmail.com';
                     }
                     return null;
                   },
@@ -60,8 +91,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 10.0),
                 TextFormField(
-                  obscureText: true,
-                  decoration: const InputDecoration(labelText: 'Password'),
+                  obscureText: _obscureText,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    suffixIcon: InkWell(
+                      onTap: togglePasswordVisibility,
+                      child: Icon(
+                        _obscureText ? Icons.visibility : Icons.visibility_off,
+                      ),
+                    ),
+                  ),
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Password tidak boleh kosong';
@@ -74,22 +113,27 @@ class _LoginScreenState extends State<LoginScreen> {
                     });
                   },
                 ),
-                const SizedBox(height: 20.0),
+                if (errorMessage.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      errorMessage,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  ),
+                const SizedBox(height: 30.0),
                 ElevatedButton(
                   onPressed: () {
                     login();
-                    if (isLoggedIn) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomeScreen(email: 'email',),
-                        ),
-                      );
-                    }
                   },
-                  child: const Text('Login'),
+                  child: const SizedBox(
+                    width: double.infinity,
+                    child: Center(
+                      child: Text('Login'),
+                    ),
+                  ),
                 ),
-                if (isLoggedIn) const SizedBox(height: 10.0),
+                const SizedBox(height: 20.0),
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
