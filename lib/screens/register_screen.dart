@@ -54,11 +54,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Register Page'),
-      ),
-      body: SingleChildScrollView(
+      resizeToAvoidBottomInset: false,
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage('assets/images/bunga.jpg'), fit: BoxFit.cover),
+        ),
         child: Center(
+            child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(25.0),
             child: Form(
@@ -67,13 +71,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    'Register',
-                    style:
-                        TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                    'Orbittech.inc',
+                    style: TextStyle(
+                      fontSize: 35.0,
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
-                  const SizedBox(height: 20.0),
+                  const SizedBox(height: 30.0),
                   TextFormField(
-                    decoration: const InputDecoration(labelText: 'Full Name'),
+                    decoration: InputDecoration(
+                      labelText: 'Full Name',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                    ),
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Nama lengkap tidak boleh kosong';
@@ -86,9 +98,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       });
                     },
                   ),
-                  const SizedBox(height: 10.0),
+                  const SizedBox(height: 20.0),
                   TextFormField(
-                    decoration: const InputDecoration(labelText: 'Jabatan'),
+                    decoration: InputDecoration(
+                      labelText: 'Jabatan',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                    ),
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Jabatan tidak boleh kosong';
@@ -101,9 +118,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       });
                     },
                   ),
-                  const SizedBox(height: 10.0),
+                  const SizedBox(height: 20.0),
                   TextFormField(
-                    decoration: const InputDecoration(labelText: 'Telepon'),
+                    decoration: InputDecoration(
+                      labelText: 'Telepon',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                    ),
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Nomor telepon tidak boleh kosong';
@@ -116,9 +138,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       });
                     },
                   ),
-                  const SizedBox(height: 10.0),
+                  const SizedBox(height: 20.0),
                   TextFormField(
-                    decoration: const InputDecoration(labelText: 'Email'),
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                    ),
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Email tidak boleh kosong';
@@ -133,11 +160,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       });
                     },
                   ),
-                  const SizedBox(height: 10.0),
+                  const SizedBox(height: 20.0),
                   TextFormField(
                     obscureText: _isPasswordHidden,
                     decoration: InputDecoration(
                       labelText: 'Password',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0)),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _isPasswordHidden
@@ -191,26 +220,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             );
                           },
                         );
-                      } else {
-                        // ignore: use_build_context_synchronously
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Registrasi Gagal'),
-                              content: const Text(
-                                  'Terjadi kesalahan saat mendaftar.'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Tutup'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
                       }
                     },
                     child: const SizedBox(
@@ -233,7 +242,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: const Text(
                       'Sudah punya akun? Login di sini',
                       style: TextStyle(
-                        color: Colors.blue,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15,
+                        color: Colors.orange,
                         decoration: TextDecoration.underline,
                       ),
                     ),
@@ -242,7 +253,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
             ),
           ),
-        ),
+        )),
       ),
     );
   }
