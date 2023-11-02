@@ -18,11 +18,11 @@ class RegisterApi {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode({
-          'email': email,
-          'password': password,
-          'fullname': fullname,
-          'jabatan': jabatan,
-          'telepon': telepon,
+          'email': 'fikihaldiansyah@gmail.com',
+          'password': '1234',
+          'fullname': 'saya siapa',
+          'jabatan': 'komisaris',
+          'telepon': '123456789',
         }),
       );
 
