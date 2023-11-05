@@ -2,34 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:tugas_akhir2/screens/home_page_screen.dart';
-
-class Event {
-  final String title;
-  final String content;
-
-  Event(this.title, this.content);
-}
+import 'package:tugas_akhir2/widget/EventContent.dart';
 
 class CalenderScreen extends StatefulWidget {
   const CalenderScreen({Key? key}) : super(key: key);
 
   @override
-  State<CalenderScreen> createState() => _CalenderScreenState();
+  State<CalenderScreen> createState() => _CalendarScreenState();
 }
 
-class _CalenderScreenState extends State<CalenderScreen> {
+class _CalendarScreenState extends State<CalenderScreen> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   final TextEditingController _eventController = TextEditingController();
-  String _eventTime = '';
-  Map<DateTime, List<Event>> events = {};
+  final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _startTime = TextEditingController();
+  final TextEditingController _endTime = TextEditingController();
+  String _timeError = '';
+  Map<DateTime, List<Event>?> events = {};
   late final ValueNotifier<List<Event>> _selectedEvents;
+  String selectedDayOfWeek = '';
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier(_getEventForDay(_selectedDay!));
+
+    selectedDayOfWeek = getDayOfWeek(_selectedDay!);
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
@@ -39,6 +40,12 @@ class _CalenderScreenState extends State<CalenderScreen> {
         _focusedDay = focusedDay;
         _selectedEvents.value = _getEventForDay(selectedDay);
       });
+
+      final dayOfWeek = getDayOfWeek(selectedDay);
+
+      setState(() {
+        selectedDayOfWeek = dayOfWeek;
+      });
     }
   }
 
@@ -46,15 +53,9 @@ class _CalenderScreenState extends State<CalenderScreen> {
     return events[day] ?? [];
   }
 
-  // ignore: unused_element
-  String _extractTime(String eventcontent) {
-    final List<String> lines = eventcontent.split('\n');
-    for (String line in lines) {
-      if (line.startsWith('Jam: ')) {
-        return line.substring(5);
-      }
-    }
-    return '';
+  String getDayOfWeek(DateTime date) {
+    final DateFormat formatter = DateFormat('EEEE');
+    return formatter.format(date);
   }
 
   @override
@@ -79,81 +80,178 @@ class _CalenderScreenState extends State<CalenderScreen> {
             builder: (context) {
               return AlertDialog(
                 scrollable: true,
-                title: const Text("Tambah Acara"),
-                content: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: TextField(
-                        controller: _eventController,
-                        decoration:
-                            const InputDecoration(labelText: 'Nama Acara'),
-                      ),
+                title: const Center(
+                  child: Text(
+                    "Tambah Acara",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 24,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Row(
+                  ),
+                ),
+                content: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        width: 280,
+                        child: TextFormField(
+                          controller: _eventController,
+                          decoration: InputDecoration(
+                            labelText: 'Nama Acara',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.red),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value?.isEmpty ?? true) {
+                              return 'Nama acara harus diisi.';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        width: 280,
+                        child: TextFormField(
+                          controller: _locationController,
+                          decoration: InputDecoration(
+                            labelText: 'Lokasi',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.red),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value?.isEmpty ?? true) {
+                              return 'Lokasi harus diisi.';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          const Text('Pilih Jam: '),
-                          ElevatedButton(
-                            onPressed: () async {
-                              final TimeOfDay? selectedTime =
-                                  await showTimePicker(
-                                context: context,
-                                initialTime: TimeOfDay.now(),
-                              );
-                              if (selectedTime != null) {
-                                final String formattedTime =
-                                    '${selectedTime.hour}:${selectedTime.minute}';
+                          SizedBox(
+                            height: 70,
+                            width: 70,
+                            child: TextField(
+                              controller: _startTime,
+                              decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 1, horizontal: 1),
+                                hintText: '   00:00',
+                                border: UnderlineInputBorder(),
+                              ),
+                              readOnly: true,
+                              onTap: () async {
+                                final time = await showTimePicker(
+                                    context: context,
+                                    initialTime: TimeOfDay.now());
                                 setState(() {
-                                  _eventTime = formattedTime;
+                                  if (time != null) {
+                                    final formattedTime =
+                                        DateFormat('HH:mm').format(DateTime(
+                                      _selectedDay!.year,
+                                      _selectedDay!.month,
+                                      _selectedDay!.day,
+                                      time.hour,
+                                      time.minute,
+                                    ));
+                                    _startTime.text = formattedTime;
+                                  }
                                 });
-                              }
-                            },
-                            child: const Text('Pilih Jam'),
+                              },
+                            ),
+                          ),
+                          const Text(
+                            'to',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w100),
+                          ),
+                          SizedBox(
+                            height: 70,
+                            width: 70,
+                            child: TextField(
+                              controller: _endTime,
+                              decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 1, horizontal: 1),
+                                hintText: '   00:00',
+                                border: UnderlineInputBorder(),
+                              ),
+                              readOnly: true,
+                              onTap: () async {
+                                final time = await showTimePicker(
+                                    context: context,
+                                    initialTime: TimeOfDay.now());
+                                setState(() {
+                                  if (time != null) {
+                                    final formattedTime =
+                                        DateFormat('HH:mm').format(DateTime(
+                                      _selectedDay!.year,
+                                      _selectedDay!.month,
+                                      _selectedDay!.day,
+                                      time.hour,
+                                      time.minute,
+                                    ));
+                                    _endTime.text = formattedTime;
+                                  }
+                                });
+                              },
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                  ],
+                      if (_timeError.isNotEmpty)
+                        Text(
+                          _timeError,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                    ],
+                  ),
                 ),
                 actions: [
                   ElevatedButton(
                     onPressed: () {
-                      if (_eventController.text.isEmpty || _eventTime.isEmpty) {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text("Kesalahan"),
-                              content: const Text(
-                                  'Nama acara dan waktu tidak boleh kosong.'),
-                              actions: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text("OK"),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      } else {
-                        final String eventcontent =
-                            'Nama Acara: ${_eventController.text}\nJam: $_eventTime';
-                        if (events.containsKey(_selectedDay!)) {
-                          events[_selectedDay!]!
-                              .add(Event("Event Title", eventcontent));
+                      if (_formKey.currentState!.validate()) {
+                        if (_startTime.text.isEmpty || _endTime.text.isEmpty) {
+                          setState(() {
+                            _timeError = 'Jam harus dipilih.';
+                          });
                         } else {
-                          events[_selectedDay!] = [
-                            Event("Event Title", eventcontent)
-                          ];
+                          setState(() {
+                            _timeError = '';
+                          });
+                          final String eventContent =
+                              '${_startTime.text}\t\t|\t\t${_eventController.text}\n${_endTime.text}\t\t|\t\t${_locationController.text}';
+                          if (events.containsKey(_selectedDay!)) {
+                            events[_selectedDay!]!
+                                .add(Event("Event Title", eventContent));
+                          } else {
+                            events[_selectedDay!] = [
+                              Event("Event Title", eventContent)
+                            ];
+                          }
+                          _eventController.clear();
+                          _startTime.clear();
+                          _endTime.clear();
+                          _locationController.clear();
+                          Navigator.of(context).pop();
+                          _selectedEvents.value =
+                              _getEventForDay(_selectedDay!);
                         }
-                        _eventController.clear();
-                        _eventTime = '';
-                        Navigator.of(context).pop();
-                        _selectedEvents.value = _getEventForDay(_selectedDay!);
                       }
                     },
                     child: const Text("Konfirmasi"),
@@ -197,6 +295,26 @@ class _CalenderScreenState extends State<CalenderScreen> {
             ),
           ),
           const SizedBox(height: 20),
+          const Divider(
+            thickness: 2,
+            color: Colors.blue,
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.only(left: 40),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: Text(
+                '$selectedDayOfWeek',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
           Expanded(
             child: ValueListenableBuilder(
               valueListenable: _selectedEvents,
@@ -204,84 +322,14 @@ class _CalenderScreenState extends State<CalenderScreen> {
                 return ListView.builder(
                   itemCount: value.length,
                   itemBuilder: (context, index) {
-                    return Card(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 4,
-                      ),
-                      color: Colors.blue[300],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 4,
-                      child: ListTile(
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: const Text("Detail Acara"),
-                                  content: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(value[index].content),
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          title: Text(
-                            value[index].content,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                            selectionColor: Colors.blue,
-                          )),
-                    );
+                    final event = value[index];
+                    return EventItem(event);
                   },
                 );
               },
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class DigitalClockWidget extends StatefulWidget {
-  const DigitalClockWidget({Key? key}) : super(key: key);
-
-  @override
-  State<DigitalClockWidget> createState() => _DigitalClockWidgetState();
-}
-
-class _DigitalClockWidgetState extends State<DigitalClockWidget> {
-  String _formattedTime = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _updateTime();
-  }
-
-  void _updateTime() {
-    final String formattedTime = DateFormat.jm().format(DateTime.now());
-    setState(() {
-      _formattedTime = formattedTime;
-    });
-
-    Future.delayed(const Duration(seconds: 1), _updateTime);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      _formattedTime,
-      style: const TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.w300,
-        color: Colors.blue,
       ),
     );
   }

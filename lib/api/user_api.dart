@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class RegisterApi {
-  final String baseUrl = 'https://7c70-103-175-225-77.ngrok-free.app/api/users';
+  final String baseUrl = 'https://bd35-180-252-87-4.ngrok-free.app/api/users';
 
   Future<bool> registerUser(
     String email,
@@ -38,7 +38,7 @@ class RegisterApi {
 }
 
 class LoginApi {
-  final String baseUrl = 'https://7c70-103-175-225-77.ngrok-free.app/api/users';
+  final String baseUrl = 'https://bd35-180-252-87-4.ngrok-free.app/api/users';
 
   Future<bool> loginUser(String email, String password) async {
     try {
