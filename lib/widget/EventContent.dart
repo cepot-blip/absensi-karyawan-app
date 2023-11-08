@@ -10,7 +10,7 @@ class Event {
 class EventItem extends StatelessWidget {
   final Event event;
 
-  EventItem(this.event);
+  const EventItem(this.event, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class EventItem extends StatelessWidget {
                 text: contentParts[0],
                 style: const TextStyle(color: Colors.black),
               ),
-              TextSpan(text: '\n'),
+              const TextSpan(text: '\n'),
               TextSpan(
                 text: contentParts[1],
                 style: const TextStyle(color: Colors.grey),
