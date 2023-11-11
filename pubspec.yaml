@@ -15,6 +15,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   http: ^1.1.0
   intl: ^0.18.1
+  provider: ^6.1.1
 
 dev_dependencies:
   flutter_test:
@@ -32,6 +33,7 @@ flutter:
     - assets/images/cuti.png
     - assets/images/pzn.png
     - assets/images/bunga.jpg
+    - assets/images/bg1.jpeg
 
   uses-material-design: true
   # example:

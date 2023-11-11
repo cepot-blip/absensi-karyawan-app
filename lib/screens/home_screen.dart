@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tugas_akhir2/screens/absen_keluar_screen.dart';
 import 'package:tugas_akhir2/screens/absen_masuk_screen.dart';
 import 'package:tugas_akhir2/screens/account_screen.dart';
@@ -9,10 +10,8 @@ import 'package:tugas_akhir2/widget/CustomButton.dart';
 import 'package:tugas_akhir2/widget/Trafic.dart';
 import 'package:tugas_akhir2/widget/MyBottomNavigationBar.dart';
 import 'package:tugas_akhir2/screens/calender_screen.dart';
+import 'package:tugas_akhir2/provider/absen_models.dart';
 
-void main() {
-  runApp(const MyApp(email: ''));
-}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key, required String email}) : super(key: key);
@@ -143,7 +142,7 @@ class HomeScreen extends StatelessWidget {
   void navigateToPage(BuildContext context, String page) {
     if (page == 'Absen Masuk') {
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => const Absenmasuk(),
+        builder: (context) => const AbsenMasukScreen(),
       ));
     } else if (page == 'Absen Keluar') {
       Navigator.of(context).push(MaterialPageRoute(
@@ -174,27 +173,51 @@ class HomeScreen extends StatelessWidget {
       body: Column(
         children: [
           const SizedBox(height: 20.0),
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Trafict(iconData: Icons.check, count: 0, label: 'Hadir'),
-              Trafict(
-                iconData: Icons.local_hospital,
-                count: 0,
-                label: 'Sakit',
+              Consumer<AbsenModel>(
+                builder: (context, absenModel, child) {
+                  return Trafict(
+                    iconData: Icons.check,
+                    count: absenModel.hadirCount,
+                    label: 'Hadir',
+                  );
+                },
+              ),
+              Consumer<AbsenModel>(
+                builder: (context, absenModel, child) {
+                  return Trafict(
+                    iconData: Icons.local_hospital,
+                    count: absenModel.sakitCount,
+                    label: 'Sakit',
+                  );
+                },
               ),
             ],
           ),
           const SizedBox(height: 20.0),
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Trafict(
-                iconData: Icons.error,
-                count: 0,
-                label: 'Izin',
+              Consumer<AbsenModel>(
+                builder: (context, absenModel, child) {
+                  return Trafict(
+                    iconData: Icons.error,
+                    count: absenModel.izinCount,
+                    label: 'Izin',
+                  );
+                },
               ),
-              Trafict(iconData: Icons.beach_access, count: 0, label: 'Cuti'),
+              Consumer<AbsenModel>(
+                builder: (context, absenModel, child) {
+                  return Trafict(
+                    iconData: Icons.beach_access,
+                    count: absenModel.cutiCount,
+                    label: 'Cuti',
+                  );
+                },
+              ),
             ],
           ),
           const SizedBox(height: 20.0),
