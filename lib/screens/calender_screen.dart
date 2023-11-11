@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
-import 'package:tugas_akhir2/screens/home_page_screen.dart';
+import 'package:tugas_akhir2/screens/home_screen.dart';
 import 'package:tugas_akhir2/widget/EventContent.dart';
 
 class CalenderScreen extends StatefulWidget {

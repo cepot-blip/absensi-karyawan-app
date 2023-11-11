@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tugas_akhir2/api/user_api.dart';
-import 'package:tugas_akhir2/screens/home_page_screen.dart';
+import 'package:tugas_akhir2/screens/home_screen.dart';
 import 'package:tugas_akhir2/screens/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -60,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/bunga.jpg'),
+            image: AssetImage('assets/images/bg1.jpeg'),
             fit: BoxFit.cover,
           ),
         ),
@@ -79,7 +79,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         fontSize: 35.0,
                         fontWeight: FontWeight.bold,
                         fontStyle: FontStyle.italic,
-                        
                       ),
                     ),
                     const SizedBox(height: 20.0),
@@ -167,7 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 15,
-                          color: Colors.orange,
+                          color: Colors.blue,
                           decoration: TextDecoration.underline,
                         ),
                       ),

@@ -59,7 +59,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         height: MediaQuery.of(context).size.height,
         decoration: const BoxDecoration(
           image: DecorationImage(
-              image: AssetImage('assets/images/bunga.jpg'), fit: BoxFit.cover),
+              image: AssetImage('assets/images/bg1.jpeg'), fit: BoxFit.cover),
         ),
         child: Center(
             child: SingleChildScrollView(
@@ -244,7 +244,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 15,
-                        color: Colors.orange,
+                        color: Colors.blue,
                         decoration: TextDecoration.underline,
                       ),
                     ),
