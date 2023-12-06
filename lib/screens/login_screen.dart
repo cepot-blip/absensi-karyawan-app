@@ -54,6 +54,14 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
+  final RegExp _emailRegex = RegExp(
+    r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$',
+  );
+
+  final RegExp _passwordRegex = RegExp(
+    r'^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%^&*(),.?":{}|<>]).{8,}$',
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,8 +100,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Email tidak boleh kosong';
-                        } else if (!value.contains('@gmail.com')) {
-                          return 'Email harus mengandung tanda @gmail.com';
+                        } else if (!_emailRegex.hasMatch(value)) {
+                          return 'Format email tidak valid';
                         }
                         return null;
                       },
@@ -109,7 +117,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       decoration: InputDecoration(
                         labelText: 'Password',
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5.0)),
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
                         suffixIcon: InkWell(
                           onTap: togglePasswordVisibility,
                           child: Icon(
@@ -122,6 +131,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Password tidak boleh kosong';
+                        } else if (!_passwordRegex.hasMatch(value)) {
+                          return 'Password harus mengandung huruf kapital, angka, dan spesial karakter';
                         }
                         return null;
                       },

@@ -25,17 +25,8 @@ class Absen {
 }
 
 class AbsenApi {
-  final String baseUrl = 'http://localhost:9000/api/absen-masuk';
-
-  Future<List<Absen>> getAbsenList() async {
-    final response = await http.post(Uri.parse('$baseUrl/read'));
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-      return data.map((item) => Absen.fromJson(item)).toList();
-    } else {
-      throw Exception('Failed to load absen list');
-    }
-  }
+  final String baseUrl =
+      'https://7bca-182-0-212-135.ngrok-free.app/api/absen-masuk';
 
   Future<Absen> createAbsen(Absen absen) async {
     final response = await http.post(
@@ -49,30 +40,6 @@ class AbsenApi {
       return Absen.fromJson(data);
     } else {
       throw Exception('Failed to create absen');
-    }
-  }
-
-  Future<void> updateAbsen(int id, Absen absen) async {
-    final response = await http.put(
-      Uri.parse('$baseUrl/update'),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode(absen),
-    );
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to update absen');
-    }
-  }
-
-  Future<void> deleteAbsen(int id, Absen absen) async {
-    final response = await http.delete(
-      Uri.parse('$baseUrl/delete'),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode(absen),
-    );
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to delete absen');
     }
   }
 }

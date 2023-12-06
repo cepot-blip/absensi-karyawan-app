@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:tugas_akhir2/api/absen_masuk_api.dart';
 
 class AbsenModel extends ChangeNotifier {
   int hadirCount = 0;
@@ -27,4 +28,6 @@ class AbsenModel extends ChangeNotifier {
   }
 
   void updateTraffic(String action) {}
+
+  void tambahAbsensi(Absen absen) {}
 }
