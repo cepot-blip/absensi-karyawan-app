@@ -16,8 +16,8 @@ class _CalendarScreenState extends State<CalenderScreen> {
   DateTime? _selectedDay;
   final TextEditingController _eventController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
-  final TextEditingController _startTime = TextEditingController();
-  final TextEditingController _endTime = TextEditingController();
+  TextEditingController _startTime = TextEditingController();
+  TextEditingController _endTime = TextEditingController();
   String _timeError = '';
   Map<DateTime, List<Event>?> events = {};
   late final ValueNotifier<List<Event>> _selectedEvents;
@@ -162,7 +162,8 @@ class _CalendarScreenState extends State<CalenderScreen> {
                                 setState(() {
                                   if (time != null) {
                                     final formattedTime =
-                                        DateFormat('HH:mm').format(DateTime(
+                                        DateFormat('\t\t\tHH:mm')
+                                            .format(DateTime(
                                       _selectedDay!.year,
                                       _selectedDay!.month,
                                       _selectedDay!.day,
@@ -199,7 +200,8 @@ class _CalendarScreenState extends State<CalenderScreen> {
                                 setState(() {
                                   if (time != null) {
                                     final formattedTime =
-                                        DateFormat('HH:mm').format(DateTime(
+                                        DateFormat('\t\t\tHH:mm')
+                                            .format(DateTime(
                                       _selectedDay!.year,
                                       _selectedDay!.month,
                                       _selectedDay!.day,
@@ -323,7 +325,56 @@ class _CalendarScreenState extends State<CalenderScreen> {
                   itemCount: value.length,
                   itemBuilder: (context, index) {
                     final event = value[index];
-                    return EventItem(event);
+                    final content = event.content;
+
+                    final parts = content.split('\n');
+
+                    if (parts.length == 2) {
+                      return Dismissible(
+                        key: UniqueKey(),
+                        onDismissed: (direction) {
+                          setState(() {
+                            events[_selectedDay!]!.removeAt(index);
+                          });
+                        },
+                        background: Container(
+                          color: Colors.red,
+                          child: Icon(Icons.delete, color: Colors.white),
+                        ),
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.blue),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: ListTile(
+                            onTap: () => print(""),
+                            title: RichText(
+                              text: TextSpan(
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.normal),
+                                children: [
+                                  TextSpan(
+                                    text: parts[0],
+                                    style: const TextStyle(color: Colors.black),
+                                  ),
+                                  TextSpan(text: '\n'),
+                                  TextSpan(
+                                    text: parts[1],
+                                    style: const TextStyle(color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Container();
+                    }
                   },
                 );
               },
