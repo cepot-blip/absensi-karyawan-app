@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tugas_akhir2/provider/users_models.dart';
 import 'package:tugas_akhir2/screens/absen_keluar_screen.dart';
 import 'package:tugas_akhir2/screens/absen_masuk_screen.dart';
 import 'package:tugas_akhir2/screens/account_screen.dart';
@@ -11,7 +12,6 @@ import 'package:tugas_akhir2/widget/Trafic.dart';
 import 'package:tugas_akhir2/widget/MyBottomNavigationBar.dart';
 import 'package:tugas_akhir2/screens/calender_screen.dart';
 import 'package:tugas_akhir2/provider/absen_models.dart';
-
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key, required String email}) : super(key: key);
@@ -40,7 +40,10 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = const [
     HomeScreen(),
     CalenderScreen(),
-    Report(),
+    Report(
+      selectedAction: '',
+      currentTime: '',
+    ),
     Account(),
   ];
 
@@ -80,12 +83,12 @@ class _HomePageState extends State<HomePage> {
       drawer: Drawer(
         child: ListView(
           children: [
-            const UserAccountsDrawerHeader(
-              accountName: Text('Mprooy Ganteng'),
-              accountEmail: Text('Mprooy@gmail.com'),
-              currentAccountPicture: CircleAvatar(
+            UserAccountsDrawerHeader(
+              accountName: Text(context.watch<UserProvider>().fullname),
+              accountEmail: Text(context.watch<UserProvider>().email),
+              currentAccountPicture: const CircleAvatar(
                 radius: 60,
-                backgroundImage: AssetImage('assets/images/pzn.png'),
+                backgroundImage: AssetImage('assets/images/defaultpp.jpeg'),
               ),
             ),
             ListTile(
@@ -115,7 +118,11 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Report()),
+                  MaterialPageRoute(
+                      builder: (context) => const Report(
+                            currentTime: '',
+                            selectedAction: '',
+                          )),
                 );
               },
             ),
@@ -144,9 +151,9 @@ class HomeScreen extends StatelessWidget {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => const AbsenMasukScreen(),
       ));
-    } else if (page == 'Absen Keluar') {
+    } else if (page == 'Absen Pulang') {
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => const Absenkeluar(),
+        builder: (context) => const AbsenKeluar(),
       ));
     } else if (page == 'Pengajuan Cuti') {
       Navigator.of(context).push(MaterialPageRoute(
@@ -162,7 +169,10 @@ class HomeScreen extends StatelessWidget {
       ));
     } else if (page == 'Report') {
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => const Report(),
+        builder: (context) => const Report(
+          selectedAction: '',
+          currentTime: '',
+        ),
       ));
     }
   }
@@ -196,7 +206,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20.0),
+          const SizedBox(height: 30.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -209,15 +219,15 @@ class HomeScreen extends StatelessWidget {
                   );
                 },
               ),
-              Consumer<AbsenModel>(
-                builder: (context, absenModel, child) {
-                  return Trafict(
-                    iconData: Icons.beach_access,
-                    count: absenModel.cutiCount,
-                    label: 'Cuti',
-                  );
-                },
-              ),
+              // Consumer<AbsenModel>(
+              //   builder: (context, absenModel, child) {
+              //     return Trafict(
+              //       iconData: Icons.beach_access,
+              //       count: absenModel.cutiCount,
+              //       label: 'Cuti',
+              //     );
+              //   },
+              // ),
             ],
           ),
           const SizedBox(height: 20.0),
@@ -243,11 +253,11 @@ class HomeScreen extends StatelessWidget {
               ),
               CustomButton(
                 iconData: Icons.logout,
-                label: 'Absen Keluar',
+                label: 'Absen Pulang',
                 buttonColor: Colors.red,
                 iconColor: Colors.white,
                 onPressed: () {
-                  navigateToPage(context, 'Absen Keluar');
+                  navigateToPage(context, 'Absen Pulang');
                 },
               ),
               CustomButton(

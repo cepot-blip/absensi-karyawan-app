@@ -58,10 +58,6 @@ class _LoginScreenState extends State<LoginScreen> {
     r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$',
   );
 
-  final RegExp _passwordRegex = RegExp(
-    r'^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%^&*(),.?":{}|<>]).{8,}$',
-  );
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      'Orbittech.inc',
+                      'Login akun',
                       style: TextStyle(
                         fontSize: 35.0,
                         fontWeight: FontWeight.bold,
@@ -131,8 +127,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Password tidak boleh kosong';
-                        } else if (!_passwordRegex.hasMatch(value)) {
-                          return 'Password harus mengandung huruf kapital, angka, dan spesial karakter';
                         }
                         return null;
                       },

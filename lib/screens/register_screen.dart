@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tugas_akhir2/api/user_api.dart';
+import 'package:tugas_akhir2/provider/users_models.dart';
 import 'package:tugas_akhir2/screens/login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -33,6 +35,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
 
       if (registeredUser) {
+        // ignore: use_build_context_synchronously
+        context.read<UserProvider>().setUserData(
+              email: email,
+              fullname: fullname,
+              jabatan: jabatan,
+              telepon: telepon,
+            );
+
         setState(() {
           isRegistered = true;
         });
@@ -63,14 +73,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     r'^[0-9]+$',
   );
 
-  final RegExp _nameRegex = RegExp(
-    r'^[A-Za-z ]+$',
-  );
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: Container(
         height: MediaQuery.of(context).size.height,
         decoration: const BoxDecoration(
@@ -89,7 +95,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      'Orbittech.inc',
+                      'Register akun',
                       style: TextStyle(
                         fontSize: 35.0,
                         fontWeight: FontWeight.bold,
@@ -107,8 +113,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Nama lengkap tidak boleh kosong';
-                        } else if (!_nameRegex.hasMatch(value)) {
-                          return 'Nama lengkap hanya boleh mengandung huruf dan spasi';
                         }
                         return null;
                       },
@@ -119,27 +123,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       },
                     ),
                     const SizedBox(height: 20.0),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        labelText: 'Jabatan',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Jabatan tidak boleh kosong';
-                        } else if (!_nameRegex.hasMatch(value)) {
-                          return 'Jabatan hanya boleh mengandung huruf dan spasi';
-                        }
-                        return null;
-                      },
-                      onChanged: (value) {
-                        setState(() {
-                          jabatan = value;
-                        });
-                      },
-                    ),
+                    // Jabatan Dropdown
+                    _buildJabatanDropdown(),
                     const SizedBox(height: 20.0),
                     TextFormField(
                       decoration: InputDecoration(
@@ -226,9 +211,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             context: context,
                             builder: (context) {
                               return AlertDialog(
-                                title: const Text('Registrasi Berhasil'),
+                                title: const Text(
+                                    'Successfully Register account!'),
                                 content: const Text(
-                                    'Anda telah berhasil terdaftar.'),
+                                  'You have successfully registered.',
+                                ),
                                 actions: [
                                   TextButton(
                                     onPressed: () {
@@ -241,7 +228,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         ),
                                       );
                                     },
-                                    child: const Text('Tutup'),
+                                    child: const Text('Ok'),
                                   ),
                                 ],
                               );
@@ -253,9 +240,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             context: context,
                             builder: (context) {
                               return AlertDialog(
-                                title: const Text('Registrasi Gagal'),
+                                title: const Text('Failed Register'),
                                 content: const Text(
-                                    'Email sudah terdaftar. Gunakan email lain.'),
+                                  'Failed Register Account!',
+                                ),
                                 actions: [
                                   TextButton(
                                     onPressed: () {
@@ -303,6 +291,53 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  FormField<String> _buildJabatanDropdown() {
+    return FormField<String>(
+      builder: (FormFieldState<String> state) {
+        return InputDecorator(
+          decoration: InputDecoration(
+            labelText: 'Jabatan',
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+          ),
+          isEmpty: jabatan.isEmpty,
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              value: jabatan.isNotEmpty ? jabatan : null,
+              isDense: true,
+              onChanged: (String? newValue) {
+                setState(() {
+                  jabatan = newValue!;
+                  state.didChange(newValue);
+                });
+              },
+              items: <String>[
+                'Pilih Jabatan', // Nilai default
+                'Pegawai',
+                'Manajer',
+                'Direktur',
+                'Supervisor',
+                'Lainnya'
+              ].map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+          ),
+        );
+      },
+      validator: (value) {
+        if (value == null || value.isEmpty || value == 'Pilih Jabatan') {
+          return 'Pilih jabatan';
+        }
+        return null;
+      },
     );
   }
 }

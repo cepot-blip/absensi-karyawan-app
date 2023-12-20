@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:tugas_akhir2/screens/home_screen.dart';
 
 class Report extends StatefulWidget {
-  const Report({Key? key}) : super(key: key);
+  final String selectedAction;
+  final String currentTime;
+
+  const Report({
+    Key? key,
+    required this.selectedAction,
+    required this.currentTime,
+  }) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -17,14 +23,11 @@ class _ReportScreenState extends State<Report> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Laporan Kerja"),
+        title: const Text("Laporan Absensi"),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
-            );
+            Navigator.pop(context);
           },
         ),
       ),
@@ -89,30 +92,30 @@ class _ReportScreenState extends State<Report> {
               ),
               margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
               padding: const EdgeInsets.all(16),
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.calendar_today),
-                      SizedBox(width: 10),
-                      Text('Jenis Absensi   : Jam Kerja'),
+                      const Icon(Icons.calendar_today),
+                      const SizedBox(width: 10),
+                      Text('Jenis Absensi   : ${widget.selectedAction}'),
                     ],
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Row(
                     children: [
-                      Icon(Icons.more_time_outlined),
-                      SizedBox(width: 10),
-                      Text('Jam Masuk       : 00:00:00'),
+                      const Icon(Icons.more_time_outlined),
+                      const SizedBox(width: 10),
+                      Text('Jam Masuk       : ${widget.currentTime}'),
                     ],
                   ),
-                  SizedBox(height: 10),
-                  Row(
+                  const SizedBox(height: 10),
+                  const Row(
                     children: [
                       Icon(Icons.av_timer_outlined),
                       SizedBox(width: 10),
-                      Text('Jam Pulang       : 19:20:13'),
+                      Text('Jam Pulang       : -'),
                     ],
                   ),
                 ],

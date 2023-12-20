@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tugas_akhir2/provider/absen_models.dart';
+import 'package:tugas_akhir2/provider/users_models.dart';
 import 'package:tugas_akhir2/screens/splash_screen.dart';
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider<AbsenModel>(create: (contex) => AbsenModel()),
+        ChangeNotifierProvider<AbsenModel>(
+          create: (contex) => AbsenModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (contex) => UserProvider(),
+        ),
       ],
       child: const MyApp(email: ''),
     ),

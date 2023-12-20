@@ -16,6 +16,9 @@ dependencies:
   http: ^1.1.0
   intl: ^0.18.1
   provider: ^6.1.1
+  shared_preferences: ^2.2.2
+  image_picker: ^1.0.5
+  permission_handler: ^11.0.1
 
 dev_dependencies:
   flutter_test:
@@ -34,6 +37,7 @@ flutter:
     - assets/images/pzn.png
     - assets/images/bunga.jpg
     - assets/images/bg1.jpeg
+    - assets/images/defaultpp.jpeg
 
   uses-material-design: true
   # example:

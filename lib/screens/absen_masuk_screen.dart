@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tugas_akhir2/provider/absen_models.dart';
 
@@ -12,6 +14,28 @@ class AbsenMasukScreen extends StatefulWidget {
 
 class _AbsenMasukScreenState extends State<AbsenMasukScreen> {
   String? selectedAction;
+  late String? currentTime;
+  late Timer timer;
+
+  @override
+  void initState() {
+    super.initState();
+    currentTime = DateFormat.Hms().format(DateTime.now());
+    timer =
+        Timer.periodic(const Duration(seconds: 1), (Timer t) => _updateTime());
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+
+  void _updateTime() {
+    setState(() {
+      currentTime = DateFormat.Hms().format(DateTime.now());
+    });
+  }
 
   void _selectAction(String action, AbsenModel absenModel) {
     setState(() {
@@ -44,6 +68,12 @@ class _AbsenMasukScreenState extends State<AbsenMasukScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Absensi Masuk'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -55,6 +85,14 @@ class _AbsenMasukScreenState extends State<AbsenMasukScreen> {
                     'assets/images/absen.png',
                     width: 300.0,
                     height: 220.0,
+                  ),
+                  const SizedBox(height: 10.0),
+                  Text(
+                    'Waktu Sekarang: ${currentTime ?? ""}',
+                    style: const TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 10.0),
                   Row(
@@ -84,56 +122,11 @@ class _AbsenMasukScreenState extends State<AbsenMasukScreen> {
                   ElevatedButton(
                     onPressed: () {
                       if (selectedAction != null) {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Berhasil Absen'),
-                              content: Text(
-                                'Anda berhasil absen sebagai $selectedAction.',
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    if (selectedAction == 'Hadir') {
-                                      Provider.of<AbsenModel>(context,
-                                              listen: false)
-                                          .tambahHadir();
-                                    } else if (selectedAction == 'Sakit') {
-                                      Provider.of<AbsenModel>(context,
-                                              listen: false)
-                                          .tambahSakit();
-                                    } else if (selectedAction == 'Izin') {
-                                      Provider.of<AbsenModel>(context,
-                                              listen: false)
-                                          .tambahIzin();
-                                    }
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('OK'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
+                        _submitAbsen(context);
                       } else {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Oopss !!'),
-                              content: const Text(
-                                  'Silakan pilih opsi absen terlebih dahulu.'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('OK'),
-                                ),
-                              ],
-                            );
-                          },
+                        _showErrorDialog(
+                          context,
+                          'Silakan pilih opsi absen terlebih dahulu.',
                         );
                       }
                     },
@@ -142,9 +135,7 @@ class _AbsenMasukScreenState extends State<AbsenMasukScreen> {
                       backgroundColor: Colors.blue,
                       padding: const EdgeInsets.symmetric(horizontal: 138.0),
                     ),
-                    child: const Text(
-                      'Absen Masuk',
-                    ),
+                    child: const Text('Absen Masuk'),
                   ),
                 ],
               );
@@ -152,6 +143,50 @@ class _AbsenMasukScreenState extends State<AbsenMasukScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void _submitAbsen(BuildContext context) {
+    _showSuccessDialog(context);
+  }
+
+  void _showSuccessDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Absen Berhasil'),
+          content: const Text('Absen Anda berhasil direkam.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Oopss !!'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -1,6 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:tugas_akhir2/provider/users_models.dart';
 import 'package:tugas_akhir2/screens/home_screen.dart';
-import '../api/account_api.dart';
 
 class Account extends StatefulWidget {
   const Account({Key? key}) : super(key: key);
@@ -10,31 +13,10 @@ class Account extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<Account> {
-  final AccountApi _accountApi = AccountApi();
-
-  String nama = '';
-  String jabatan = '';
-  String telepon = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _loadUserInfo();
-  }
-
-  void _loadUserInfo() async {
-    final userInfo = await _accountApi.getUserInfo();
-    if (userInfo != null) {
-      setState(() {
-        nama = userInfo['fullname'];
-        jabatan = userInfo['jabatan'];
-        telepon = userInfo['telepon'];
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final userData = context.watch<UserProvider>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Profile"),
@@ -55,9 +37,36 @@ class _AccountScreenState extends State<Account> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                const CircleAvatar(
-                  radius: 60,
-                  backgroundImage: AssetImage('assets/images/pzn.png'),
+                Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 60,
+                      backgroundImage: AssetImage(userData.profilePicturePath),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: GestureDetector(
+                        onTap: () {
+                          _showImagePickerDialog(context);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.blue,
+                          ),
+                          child: const Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 30,
                 ),
                 const SizedBox(
                   height: 20,
@@ -78,12 +87,43 @@ class _AccountScreenState extends State<Account> {
                         text: TextSpan(
                           children: <TextSpan>[
                             const TextSpan(
-                              text: 'Nama :  ',
+                              text: 'Name      :  ',
                               style:
                                   TextStyle(fontSize: 14, color: Colors.grey),
                             ),
                             TextSpan(
-                              text: nama,
+                              text: userData.fullname,
+                              style: const TextStyle(
+                                  fontSize: 16, color: Colors.black),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const Divider(
+                  height: 1,
+                  color: Colors.grey,
+                ),
+                Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 10,
+                    ),
+                    child: ListTile(
+                      leading: const Icon(Icons.email),
+                      title: RichText(
+                        text: TextSpan(
+                          children: <TextSpan>[
+                            const TextSpan(
+                              text: 'Email       :  ',
+                              style:
+                                  TextStyle(fontSize: 14, color: Colors.grey),
+                            ),
+                            TextSpan(
+                              text: userData.email,
                               style: const TextStyle(
                                   fontSize: 16, color: Colors.black),
                             ),
@@ -109,12 +149,12 @@ class _AccountScreenState extends State<Account> {
                         text: TextSpan(
                           children: <TextSpan>[
                             const TextSpan(
-                              text: 'Jabatan :  ',
+                              text: 'Jabatan  :  ',
                               style:
                                   TextStyle(fontSize: 14, color: Colors.grey),
                             ),
                             TextSpan(
-                              text: jabatan,
+                              text: userData.jabatan,
                               style: const TextStyle(
                                   fontSize: 16, color: Colors.black),
                             ),
@@ -140,12 +180,12 @@ class _AccountScreenState extends State<Account> {
                         text: TextSpan(
                           children: <TextSpan>[
                             const TextSpan(
-                              text: 'Telepon :  ',
+                              text: 'Telepon  :  ',
                               style:
                                   TextStyle(fontSize: 14, color: Colors.grey),
                             ),
                             TextSpan(
-                              text: telepon,
+                              text: userData.telepon,
                               style: const TextStyle(
                                   fontSize: 16, color: Colors.black),
                             ),
@@ -165,5 +205,63 @@ class _AccountScreenState extends State<Account> {
         ),
       ),
     );
+  }
+
+  void _showImagePickerDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Pilih Foto"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  _pickImage(ImageSource.gallery, context);
+                  Navigator.pop(context);
+                },
+                child: const Text("Pilih dari Galeri"),
+              ),
+              const SizedBox(height: 8),
+              ElevatedButton(
+                onPressed: () {
+                  _pickImage(ImageSource.camera, context);
+                  Navigator.pop(context);
+                },
+                child: const Text("Ambil Foto Baru"),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _pickImage(ImageSource source, BuildContext context) async {
+    final picker = ImagePicker();
+    XFile? pickedFile;
+
+    try {
+      pickedFile = await picker.pickImage(source: source);
+    } catch (e) {
+      if (kDebugMode) {
+        print('Kesalahan pemilih gambar: $e');
+      }
+    }
+
+    // ignore: use_build_context_synchronously
+    final userProvider = context.read<UserProvider>();
+
+    if (pickedFile != null) {
+      userProvider.updateProfilePicture(pickedFile.path);
+
+      // ignore: use_build_context_synchronously
+      if (context.findRenderObject() != null &&
+          // ignore: use_build_context_synchronously
+          context.findRenderObject()!.attached) {
+        setState(() {});
+      }
+    }
   }
 }

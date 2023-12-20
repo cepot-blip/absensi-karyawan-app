@@ -1,8 +1,9 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class RegisterApi {
-  final String baseUrl = 'https://e6bb-182-3-43-0.ngrok-free.app/api/users';
+  final String baseUrl = 'https://401e-103-157-79-110.ngrok-free.app/api/users';
 
   Future<bool> registerUser(
     String email,
@@ -29,16 +30,25 @@ class RegisterApi {
       if (response.statusCode == 201) {
         return true;
       } else {
+        if (kDebugMode) {
+          print('Failed to register: ${response.statusCode}');
+        }
+        if (kDebugMode) {
+          print('Response body: ${response.body}');
+        }
         return false;
       }
     } catch (e) {
+      if (kDebugMode) {
+        print('Network error: $e');
+      }
       return false;
     }
   }
 }
 
 class LoginApi {
-  final String baseUrl = 'https://e6bb-182-3-43-0.ngrok-free.app/api/users';
+  final String baseUrl = 'https://401e-103-157-79-110.ngrok-free.app/api/users';
 
   Future<bool> loginUser(String email, String password) async {
     try {
