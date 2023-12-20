@@ -12,6 +12,7 @@ class CalenderScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalenderScreen> {
+  // PROPERTI
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   final TextEditingController _eventController = TextEditingController();
@@ -24,6 +25,7 @@ class _CalendarScreenState extends State<CalenderScreen> {
   String selectedDayOfWeek = '';
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  // LIFECYCLE METHOD
   @override
   void initState() {
     super.initState();
@@ -33,6 +35,17 @@ class _CalendarScreenState extends State<CalenderScreen> {
     selectedDayOfWeek = getDayOfWeek(_selectedDay!);
   }
 
+  // HELPHER METHOD
+  List<Event> _getEventForDay(DateTime day) {
+    return events[day] ?? [];
+  }
+
+  String getDayOfWeek(DateTime date) {
+    final DateFormat formatter = DateFormat('EEEE');
+    return formatter.format(date);
+  }
+
+  // HANDLER ACARA
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     if (!isSameDay(_selectedDay, selectedDay)) {
       setState(() {
@@ -49,32 +62,59 @@ class _CalendarScreenState extends State<CalenderScreen> {
     }
   }
 
-  List<Event> _getEventForDay(DateTime day) {
-    return events[day] ?? [];
+  //KONFIRMASI HAPUS EVENT
+  Future<void> _confirmDeleteEvent(int index) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Anda yakin ingin menghapus acara ini?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Batal'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Hapus'),
+              style: TextButton.styleFrom(),
+              onPressed: () {
+                Navigator.of(context).pop();
+                setState(() {
+                  events[_selectedDay!]!.removeAt(index);
+                });
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
-  String getDayOfWeek(DateTime date) {
-    final DateFormat formatter = DateFormat('EEEE');
-    return formatter.format(date);
-  }
-
+  // BUILD METHOD
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Kalender Karyawan"),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
-            );
-          },
-        ),
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const HomePage()));
+            }),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          // TAMPILAN DIALOG TAMBAH ACARA
           showDialog(
             context: context,
             builder: (context) {
@@ -93,6 +133,7 @@ class _CalendarScreenState extends State<CalenderScreen> {
                   key: _formKey,
                   child: Column(
                     children: [
+                      // INPUT NAMA ACARA
                       SizedBox(
                         width: 280,
                         child: TextFormField(
@@ -115,9 +156,8 @@ class _CalendarScreenState extends State<CalenderScreen> {
                           },
                         ),
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
+                      const SizedBox(height: 10),
+                      // INPUT LOKASI
                       SizedBox(
                         width: 280,
                         child: TextFormField(
@@ -140,9 +180,11 @@ class _CalendarScreenState extends State<CalenderScreen> {
                           },
                         ),
                       ),
+                      // INPUT WAKTU
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
+                          // INPUT WAKTU MULAI
                           SizedBox(
                             height: 70,
                             width: 70,
@@ -157,12 +199,14 @@ class _CalendarScreenState extends State<CalenderScreen> {
                               readOnly: true,
                               onTap: () async {
                                 final time = await showTimePicker(
-                                    context: context,
-                                    initialTime: TimeOfDay.now());
+                                  context: context,
+                                  initialTime: TimeOfDay.now(),
+                                );
                                 setState(() {
                                   if (time != null) {
                                     final formattedTime =
-                                        DateFormat('HH:mm').format(DateTime(
+                                        DateFormat('\t\t\tHH:mm')
+                                            .format(DateTime(
                                       _selectedDay!.year,
                                       _selectedDay!.month,
                                       _selectedDay!.day,
@@ -180,6 +224,7 @@ class _CalendarScreenState extends State<CalenderScreen> {
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.w100),
                           ),
+                          // INPUT WAKTU SELESAI
                           SizedBox(
                             height: 70,
                             width: 70,
@@ -194,12 +239,14 @@ class _CalendarScreenState extends State<CalenderScreen> {
                               readOnly: true,
                               onTap: () async {
                                 final time = await showTimePicker(
-                                    context: context,
-                                    initialTime: TimeOfDay.now());
+                                  context: context,
+                                  initialTime: TimeOfDay.now(),
+                                );
                                 setState(() {
                                   if (time != null) {
                                     final formattedTime =
-                                        DateFormat('HH:mm').format(DateTime(
+                                        DateFormat('\t\t\tHH:mm')
+                                            .format(DateTime(
                                       _selectedDay!.year,
                                       _selectedDay!.month,
                                       _selectedDay!.day,
@@ -214,6 +261,7 @@ class _CalendarScreenState extends State<CalenderScreen> {
                           ),
                         ],
                       ),
+                      // PESAN KESALAHAN WAKTU
                       if (_timeError.isNotEmpty)
                         Text(
                           _timeError,
@@ -223,6 +271,7 @@ class _CalendarScreenState extends State<CalenderScreen> {
                   ),
                 ),
                 actions: [
+                  // TOMBOL KONFIRMASI
                   ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
@@ -234,8 +283,10 @@ class _CalendarScreenState extends State<CalenderScreen> {
                           setState(() {
                             _timeError = '';
                           });
+                          // BUAT KONTEN ACARA
                           final String eventContent =
                               '${_startTime.text}\t\t|\t\t${_eventController.text}\n${_endTime.text}\t\t|\t\t${_locationController.text}';
+                          // Perbarui Acara
                           if (events.containsKey(_selectedDay!)) {
                             events[_selectedDay!]!
                                 .add(Event("Event Title", eventContent));
@@ -244,11 +295,13 @@ class _CalendarScreenState extends State<CalenderScreen> {
                               Event("Event Title", eventContent)
                             ];
                           }
+                          // DELETE KOLOM TEKS
                           _eventController.clear();
                           _startTime.clear();
                           _endTime.clear();
                           _locationController.clear();
                           Navigator.of(context).pop();
+                          // Perbarui Acara Terpilih
                           _selectedEvents.value =
                               _getEventForDay(_selectedDay!);
                         }
@@ -266,6 +319,7 @@ class _CalendarScreenState extends State<CalenderScreen> {
       ),
       body: Column(
         children: [
+          // KALENDER
           TableCalendar(
             headerStyle: const HeaderStyle(
               formatButtonVisible: false,
@@ -294,12 +348,12 @@ class _CalendarScreenState extends State<CalenderScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          // PEMBATAS
           const Divider(
             thickness: 2,
             color: Colors.blue,
           ),
-          const SizedBox(height: 20),
+          // TEKS HARI YANG DIPILIH
           Padding(
             padding: const EdgeInsets.only(left: 40),
             child: Align(
@@ -314,16 +368,75 @@ class _CalendarScreenState extends State<CalenderScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 10),
+          // DAFTAR ACARA
           Expanded(
             child: ValueListenableBuilder(
               valueListenable: _selectedEvents,
               builder: (context, value, _) {
                 return ListView.builder(
+                  shrinkWrap: true,
                   itemCount: value.length,
                   itemBuilder: (context, index) {
                     final event = value[index];
-                    return EventItem(event);
+                    final content = event.content;
+
+                    final parts = content.split('\n');
+
+                    if (parts.length == 2) {
+                      // ITEM ACARA
+                      return ListTile(
+                        title: Container(
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.blue),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // KONTEN ACARA
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () => print(""),
+                                  child: RichText(
+                                    text: TextSpan(
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.normal),
+                                      children: [
+                                        TextSpan(
+                                          text: parts[0],
+                                          style: const TextStyle(
+                                              color: Colors.black),
+                                        ),
+                                        TextSpan(text: '\n'),
+                                        TextSpan(
+                                          text: parts[1],
+                                          style: const TextStyle(
+                                              color: Colors.grey),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              // TOMBOL HAPUS
+                              IconButton(
+                                icon: Icon(Icons.delete),
+                                onPressed: () {
+                                  _confirmDeleteEvent(index);
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Container();
+                    }
                   },
                 );
               },
