@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tugas_akhir2/provider/users_models.dart';
@@ -66,80 +68,85 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
-      appBar: _currentIndex == 0 ? homeAppBar : null,
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _pages,
-      ),
-      bottomNavigationBar: MyBottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-      ),
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            UserAccountsDrawerHeader(
-              accountName: Text(context.watch<UserProvider>().fullname),
-              accountEmail: Text(context.watch<UserProvider>().email),
-              currentAccountPicture: const CircleAvatar(
-                radius: 60,
-                backgroundImage: AssetImage('assets/images/defaultpp.jpeg'),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text('Profil'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Account()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.calendar_today),
-              title: const Text('Calendar'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const CalenderScreen()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.insert_chart),
-              title: const Text('Report'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const Report(
-                            currentTime: '',
-                            selectedAction: '',
-                          )),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.exit_to_app),
-              title: const Text('Log Out'),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const LoginScreen()));
-              },
-            ),
-          ],
+        key: _scaffoldKey,
+        appBar: _currentIndex == 0 ? homeAppBar : null,
+        body: IndexedStack(
+          index: _currentIndex,
+          children: _pages,
         ),
-      ),
-    );
+        bottomNavigationBar: MyBottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+        ),
+        drawer: Drawer(
+          child: Consumer<UserProvider>(builder: (context, userProvider, _) {
+            return ListView(
+              children: [
+                UserAccountsDrawerHeader(
+                  accountName: Text(userProvider.fullname),
+                  accountEmail: Text(userProvider.email),
+                  currentAccountPicture: ClipOval(
+                    child: Image.file(
+                      File(userProvider.profilePicturePath),
+                      width: 120,
+                      height: 120,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.person),
+                  title: const Text('Profil'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Account()),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.calendar_today),
+                  title: const Text('Calendar'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CalenderScreen()),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.insert_chart),
+                  title: const Text('Report'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const Report(
+                                currentTime: '',
+                                selectedAction: '',
+                              )),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.exit_to_app),
+                  title: const Text('Log Out'),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginScreen()));
+                  },
+                ),
+              ],
+            );
+          }),
+        ));
   }
 }
 

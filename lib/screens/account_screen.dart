@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -39,9 +41,13 @@ class _AccountScreenState extends State<Account> {
               children: <Widget>[
                 Stack(
                   children: [
-                    CircleAvatar(
-                      radius: 60,
-                      backgroundImage: AssetImage(userData.profilePicturePath),
+                    ClipOval(
+                      child: Image.file(
+                        File(userData.profilePicturePath),
+                        width: 120,
+                        height: 120,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                     Positioned(
                       bottom: 0,
@@ -217,16 +223,16 @@ class _AccountScreenState extends State<Account> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ElevatedButton(
-                onPressed: () {
-                  _pickImage(ImageSource.gallery, context);
+                onPressed: () async {
+                  await _pickImage(ImageSource.gallery, context);
                   Navigator.pop(context);
                 },
                 child: const Text("Pilih dari Galeri"),
               ),
               const SizedBox(height: 8),
               ElevatedButton(
-                onPressed: () {
-                  _pickImage(ImageSource.camera, context);
+                onPressed: () async {
+                  await _pickImage(ImageSource.camera, context);
                   Navigator.pop(context);
                 },
                 child: const Text("Ambil Foto Baru"),
@@ -257,11 +263,11 @@ class _AccountScreenState extends State<Account> {
       userProvider.updateProfilePicture(pickedFile.path);
 
       // ignore: use_build_context_synchronously
-      if (context.findRenderObject() != null &&
-          // ignore: use_build_context_synchronously
-          context.findRenderObject()!.attached) {
-        setState(() {});
-      }
+      // if (context.findRenderObject() != null &&
+      //     // ignore: use_build_context_synchronously
+      //     context.findRenderObject()!.attached) {
+      setState(() {});
     }
   }
 }
+  // }
