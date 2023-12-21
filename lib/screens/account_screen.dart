@@ -41,14 +41,17 @@ class _AccountScreenState extends State<Account> {
               children: <Widget>[
                 Stack(
                   children: [
-                    ClipOval(
-                      child: Image.file(
-                        File(userData.profilePicturePath),
-                        width: 120,
-                        height: 120,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                    userData.profilePicturePath.isNotEmpty
+                        ? CircleAvatar(
+                            radius: 60,
+                            backgroundImage:
+                                FileImage(File(userData.profilePicturePath)),
+                          )
+                        : CircleAvatar(
+                            radius: 60,
+                            backgroundImage:
+                                AssetImage('assets/images/defaultpp.jpeg'),
+                          ),
                     Positioned(
                       bottom: 0,
                       right: 0,
@@ -63,7 +66,7 @@ class _AccountScreenState extends State<Account> {
                             color: Colors.blue,
                           ),
                           child: const Icon(
-                            Icons.edit,
+                            Icons.add_a_photo,
                             color: Colors.white,
                           ),
                         ),
@@ -218,24 +221,26 @@ class _AccountScreenState extends State<Account> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Pilih Foto"),
+          title: const Center(child: Text("Pilih foto")),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ElevatedButton(
+              ElevatedButton.icon(
                 onPressed: () async {
                   await _pickImage(ImageSource.gallery, context);
                   Navigator.pop(context);
                 },
-                child: const Text("Pilih dari Galeri"),
+                icon: const Icon(Icons.photo_library),
+                label: const Text("Pilih dari Galeri"),
               ),
               const SizedBox(height: 8),
-              ElevatedButton(
+              ElevatedButton.icon(
                 onPressed: () async {
                   await _pickImage(ImageSource.camera, context);
                   Navigator.pop(context);
                 },
-                child: const Text("Ambil Foto Baru"),
+                icon: const Icon(Icons.camera_alt),
+                label: const Text("Ambil Foto Baru"),
               ),
             ],
           ),

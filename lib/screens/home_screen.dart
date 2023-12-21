@@ -67,6 +67,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final userData = context.watch<UserProvider>();
+
     return Scaffold(
         key: _scaffoldKey,
         appBar: _currentIndex == 0 ? homeAppBar : null,
@@ -89,13 +91,17 @@ class _HomePageState extends State<HomePage> {
                 UserAccountsDrawerHeader(
                   accountName: Text(userProvider.fullname),
                   accountEmail: Text(userProvider.email),
-                  currentAccountPicture: ClipOval(
-                    child: Image.file(
-                      File(userProvider.profilePicturePath),
-                      width: 120,
-                      height: 120,
-                      fit: BoxFit.cover,
-                    ),
+                  currentAccountPicture: Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 60,
+                        backgroundImage: userData.profilePicturePath.isNotEmpty
+                            ? FileImage(File(userData.profilePicturePath))
+                            : AssetImage('assets/images/defaultpp.jpeg')
+                                as ImageProvider,
+                      ),
+                      // Add other widgets/components as needed on top of the CircleAvatar
+                    ],
                   ),
                 ),
                 ListTile(

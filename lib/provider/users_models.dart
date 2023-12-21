@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class UserProvider extends ChangeNotifier {
-  String _profilePicturePath = 'assets/images/defaultpp.jpeg';
+  String _profilePicturePath = '';
 
   String get profilePicturePath => _profilePicturePath;
 
