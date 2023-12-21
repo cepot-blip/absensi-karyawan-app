@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -110,56 +109,11 @@ class _AbsenKeluarState extends State<AbsenKeluar> {
               ElevatedButton(
                 onPressed: () {
                   if (selectedAction != null) {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: const Text('Berhasil Absen'),
-                          content: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Anda berhasil absen sebagai $selectedAction.',
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Pada Tanggal dan Waktu: ${DateFormat('EEEE, d MMMM y H:m:s').format(DateTime.now())}',
-                              ),
-                            ],
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                if (selectedAction == 'Hadir') {
-                                } else if (selectedAction == 'Sakit') {
-                                } else if (selectedAction == 'Izin') {}
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
+                    _submitAbsen(context);
                   } else {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: const Text('Oopss !!'),
-                          content: const Text(
-                              'Silakan pilih opsi absen terlebih dahulu.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        );
-                      },
+                    _showErrorDialog(
+                      context,
+                      'Silakan pilih opsi absen terlebih dahulu.',
                     );
                   }
                 },
@@ -174,6 +128,159 @@ class _AbsenKeluarState extends State<AbsenKeluar> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  void _submitAbsen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Report(
+          selectedAction: selectedAction!,
+          currentTime: currentTime,
+        ),
+      ),
+    );
+  }
+
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Oopss !!'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class Report extends StatelessWidget {
+  final String currentTime;
+  final String selectedAction;
+
+  const Report({
+    Key? key,
+    required this.currentTime,
+    required this.selectedAction,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    String formattedDate = DateFormat('EEEE, d MMMM y').format(DateTime.now());
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Laporan Absensi"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const SizedBox(height: 20),
+            Container(
+              width: 370,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Center(
+                child: Text(
+                  'Tampilan Laporan Absen',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              width: 370,
+              height: 50,
+              decoration: const BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(5),
+                  topRight: Radius.circular(5),
+                ),
+              ),
+              margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Text(
+                    formattedDate,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(5),
+                  bottomRight: Radius.circular(5),
+                ),
+              ),
+              margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.calendar_today),
+                      const SizedBox(width: 10),
+                      Text('Jenis Absensi   : $selectedAction'),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      const Icon(Icons.more_time_outlined),
+                      const SizedBox(width: 10),
+                      Text('Jam Masuk       : $currentTime'),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  const Row(
+                    children: [
+                      Icon(Icons.av_timer_outlined),
+                      SizedBox(width: 10),
+                      Text('Jam Pulang       : -'),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

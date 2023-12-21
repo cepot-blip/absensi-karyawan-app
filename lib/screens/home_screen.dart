@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = const [
     HomeScreen(),
     CalenderScreen(),
-    Report(
+    ReportScreen(
       selectedAction: '',
       currentTime: '',
     ),
@@ -126,7 +126,7 @@ class _HomePageState extends State<HomePage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const Report(
+                          builder: (context) => const ReportScreen(
                                 currentTime: '',
                                 selectedAction: '',
                               )),
@@ -176,7 +176,7 @@ class HomeScreen extends StatelessWidget {
       ));
     } else if (page == 'Report') {
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => const Report(
+        builder: (context) => const ReportScreen(
           selectedAction: '',
           currentTime: '',
         ),

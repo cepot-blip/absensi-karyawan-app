@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tugas_akhir2/provider/absen_models.dart';
+import 'package:tugas_akhir2/screens/report_screen.dart';
 
 class AbsenMasukScreen extends StatefulWidget {
   const AbsenMasukScreen({Key? key}) : super(key: key);
@@ -42,6 +43,25 @@ class _AbsenMasukScreenState extends State<AbsenMasukScreen> {
       selectedAction = action;
       absenModel.updateTraffic(action);
     });
+  }
+
+  void _submitAbsen(BuildContext context) {
+    final absenModel = Provider.of<AbsenModel>(context, listen: false);
+    absenModel.updateData(
+        selectedAction ?? "", currentTime ?? "", "keterangan");
+    _showSuccessDialog(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChangeNotifierProvider.value(
+          value: absenModel,
+          child: const ReportScreen(
+            currentTime: '',
+            selectedAction: '',
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildActionButton(String action, AbsenModel absenModel) {
@@ -144,10 +164,6 @@ class _AbsenMasukScreenState extends State<AbsenMasukScreen> {
         ),
       ),
     );
-  }
-
-  void _submitAbsen(BuildContext context) {
-    _showSuccessDialog(context);
   }
 
   void _showSuccessDialog(BuildContext context) {

@@ -1,10 +1,18 @@
 import 'package:flutter/foundation.dart';
 
 class AbsenModel extends ChangeNotifier {
+  String? selectedAction;
+  String? currentTime;
+
+  void updateData(String action, String time, String note) {
+    selectedAction = action;
+    currentTime = time;
+    notifyListeners();
+  }
+
   int hadirCount = 0;
   int sakitCount = 0;
   int izinCount = 0;
-  int cutiCount = 0;
 
   void tambahHadir() {
     hadirCount++;
@@ -18,11 +26,6 @@ class AbsenModel extends ChangeNotifier {
 
   void tambahIzin() {
     izinCount++;
-    notifyListeners();
-  }
-
-  void tambahCuti() {
-    cutiCount++;
     notifyListeners();
   }
 

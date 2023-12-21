@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:tugas_akhir2/provider/absen_models.dart';
 
-class Report extends StatefulWidget {
-  final String selectedAction;
-  final String currentTime;
-
-  const Report({
-    Key? key,
-    required this.selectedAction,
-    required this.currentTime,
-  }) : super(key: key);
+class ReportScreen extends StatefulWidget {
+  const ReportScreen(
+      {Key? key, required String currentTime, required String selectedAction})
+      : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
   _ReportScreenState createState() => _ReportScreenState();
 }
 
-class _ReportScreenState extends State<Report> {
+class _ReportScreenState extends State<ReportScreen> {
   @override
   Widget build(BuildContext context) {
+    final absenModel = Provider.of<AbsenModel>(context);
+
     String formattedDate = DateFormat('EEEE, d MMMM y').format(DateTime.now());
 
     return Scaffold(
@@ -99,7 +98,7 @@ class _ReportScreenState extends State<Report> {
                     children: [
                       const Icon(Icons.calendar_today),
                       const SizedBox(width: 10),
-                      Text('Jenis Absensi   : ${widget.selectedAction}'),
+                      Text('Jenis Absensi   : ${absenModel.selectedAction}'),
                     ],
                   ),
                   const SizedBox(height: 10),
@@ -107,7 +106,7 @@ class _ReportScreenState extends State<Report> {
                     children: [
                       const Icon(Icons.more_time_outlined),
                       const SizedBox(width: 10),
-                      Text('Jam Masuk       : ${widget.currentTime}'),
+                      Text('Jam Masuk       : ${absenModel.currentTime}'),
                     ],
                   ),
                   const SizedBox(height: 10),
