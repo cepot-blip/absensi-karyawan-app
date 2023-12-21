@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 
-
 class AbsenModel extends ChangeNotifier {
   int hadirCount = 0;
   int sakitCount = 0;
@@ -37,5 +36,3 @@ class AbsenModel extends ChangeNotifier {
     }
   }
 }
-
-
