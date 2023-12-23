@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:tugas_akhir2/provider/absen_models.dart';
 
 class AbsenKeluar extends StatefulWidget {
   const AbsenKeluar({Key? key}) : super(key: key);
@@ -134,15 +136,26 @@ class _AbsenKeluarState extends State<AbsenKeluar> {
   }
 
   void _submitAbsen(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Report(
-          selectedAction: selectedAction!,
-          currentTime: currentTime,
+    if (selectedAction != null) {
+      final absenModel = Provider.of<AbsenModel>(context, listen: false);
+      absenModel.updateData(selectedAction!, currentTime, '');
+      absenModel.updateJamPulang(currentTime);
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Report(
+            selectedAction: selectedAction!,
+            currentTime: currentTime,
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      _showErrorDialog(
+        context,
+        'Silakan pilih opsi absen terlebih dahulu.',
+      );
+    }
   }
 
   void _showErrorDialog(BuildContext context, String message) {

@@ -3,10 +3,16 @@ import 'package:flutter/foundation.dart';
 class AbsenModel extends ChangeNotifier {
   String? selectedAction;
   String? currentTime;
+  String? jamPulang;
 
   void updateData(String action, String time, String note) {
     selectedAction = action;
     currentTime = time;
+    notifyListeners();
+  }
+
+  void updateJamPulang(String time) {
+    jamPulang = time;
     notifyListeners();
   }
 

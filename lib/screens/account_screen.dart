@@ -47,7 +47,7 @@ class _AccountScreenState extends State<Account> {
                             backgroundImage:
                                 FileImage(File(userData.profilePicturePath)),
                           )
-                        : CircleAvatar(
+                        : const CircleAvatar(
                             radius: 60,
                             backgroundImage:
                                 AssetImage('assets/images/defaultpp.jpeg'),
@@ -228,6 +228,7 @@ class _AccountScreenState extends State<Account> {
               ElevatedButton.icon(
                 onPressed: () async {
                   await _pickImage(ImageSource.gallery, context);
+                  // ignore: use_build_context_synchronously
                   Navigator.pop(context);
                 },
                 icon: const Icon(Icons.photo_library),
@@ -237,6 +238,7 @@ class _AccountScreenState extends State<Account> {
               ElevatedButton.icon(
                 onPressed: () async {
                   await _pickImage(ImageSource.camera, context);
+                  // ignore: use_build_context_synchronously
                   Navigator.pop(context);
                 },
                 icon: const Icon(Icons.camera_alt),

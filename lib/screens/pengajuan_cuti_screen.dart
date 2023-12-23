@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class PengajuanCuti extends StatefulWidget {
   const PengajuanCuti({Key? key}) : super(key: key);
@@ -15,18 +17,7 @@ class _PengajuanCutiState extends State<PengajuanCuti> {
   final TextEditingController _keteranganController = TextEditingController();
 
   String? _selectedJenisCuti;
-  String? _selectedStatusPengajuan;
-  List<String> jenisCutiOptions = [
-    'Cuti Tahunan',
-    'Cuti Sakit',
-    'Cuti Hamil',
-  ];
-
-  List<String> statusPengajuanOptions = [
-    'Menunggu',
-    'Disetujui',
-    'Ditolak',
-  ];
+  File? _selectedFile;
 
   void _showSuccessDialog() {
     showDialog(
@@ -48,32 +39,21 @@ class _PengajuanCutiState extends State<PengajuanCuti> {
     );
   }
 
-  void _submitPengajuanCuti() {
-    if (_tanggalRequestController.text.isEmpty ||
-        _jumlahCutiController.text.isEmpty ||
-        _keteranganController.text.isEmpty ||
-        _selectedJenisCuti == null ||
-        _selectedStatusPengajuan == null) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Oopss !!'),
-            content: const Text('Semua field harus diisi!'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      _showSuccessDialog();
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _selectedFile = File(pickedFile.path);
+      });
     }
+  }
+
+  void _removeImage() {
+    setState(() {
+      _selectedFile = null;
+    });
   }
 
   @override
@@ -112,7 +92,8 @@ class _PengajuanCutiState extends State<PengajuanCuti> {
                           _selectedJenisCuti = newValue;
                         });
                       },
-                      items: jenisCutiOptions.map((String value) {
+                      items: ['Cuti Tahunan', 'Cuti Sakit', 'Cuti Hamil']
+                          .map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
@@ -152,32 +133,44 @@ class _PengajuanCutiState extends State<PengajuanCuti> {
                       ),
                     ),
                     const SizedBox(height: 12.0),
-                    DropdownButtonFormField<String>(
-                      value: _selectedStatusPengajuan,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          _selectedStatusPengajuan = newValue;
-                        });
-                      },
-                      items: statusPengajuanOptions.map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      decoration: InputDecoration(
-                        labelText: 'Status Pengajuan',
-                        hintText: 'Pilih status pengajuan cuti',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        labelStyle: const TextStyle(fontSize: 12.0),
+                    SizedBox(
+                      width: double.infinity,
+                      child: Row(
+                        children: [
+                          OutlinedButton(
+                            onPressed: _pickImage,
+                            style: OutlinedButton.styleFrom(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                              side: const BorderSide(color: Colors.blue),
+                            ),
+                            child: const Text(
+                              'Unggah Foto',
+                              style: TextStyle(
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ),
+                          if (_selectedFile != null) ...[
+                            const SizedBox(width: 8.0),
+                            IconButton(
+                              icon: const Icon(Icons.delete_outline),
+                              onPressed: _removeImage,
+                              color: Colors.red,
+                            ),
+                          ],
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 12.0),
+                    if (_selectedFile != null)
+                      Text('File: ${_selectedFile!.path}'),
+                    const SizedBox(height: 10.0),
                     TextField(
                       controller: _keteranganController,
-                      maxLines: 5,
+                      maxLines: 3,
                       decoration: const InputDecoration(
                         labelText: 'Tambah Keterangan',
                         labelStyle: TextStyle(fontSize: 12.0),
@@ -188,12 +181,12 @@ class _PengajuanCutiState extends State<PengajuanCuti> {
                     const SizedBox(height: 16.0),
                     ElevatedButton(
                       onPressed: _submitPengajuanCuti,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 130.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5.0),
                         ),
-                        backgroundColor: Colors.blue,
+                        side: const BorderSide(color: Colors.blue),
                       ),
                       child: const Text(
                         'Pengajuan Cuti',
@@ -210,5 +203,33 @@ class _PengajuanCutiState extends State<PengajuanCuti> {
         ),
       ),
     );
+  }
+
+  void _submitPengajuanCuti() {
+    if (_tanggalRequestController.text.isEmpty ||
+        _jumlahCutiController.text.isEmpty ||
+        _keteranganController.text.isEmpty ||
+        _selectedJenisCuti == null ||
+        _selectedFile == null) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Oopss !!'),
+            content: const Text('Semua field harus diisi, termasuk foto!'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      _showSuccessDialog();
+    }
   }
 }

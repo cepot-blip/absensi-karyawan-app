@@ -4,9 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:tugas_akhir2/provider/absen_models.dart';
 
 class ReportScreen extends StatefulWidget {
-  const ReportScreen(
-      {Key? key, required String currentTime, required String selectedAction})
-      : super(key: key);
+  const ReportScreen({
+    Key? key,
+    required String currentTime,
+    required String selectedAction,
+  }) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -110,11 +112,11 @@ class _ReportScreenState extends State<ReportScreen> {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  const Row(
+                  Row(
                     children: [
-                      Icon(Icons.av_timer_outlined),
-                      SizedBox(width: 10),
-                      Text('Jam Pulang       : -'),
+                      const Icon(Icons.av_timer_outlined),
+                      const SizedBox(width: 10),
+                      Text('Jam Pulang       : ${absenModel.jamPulang ?? "-"}'),
                     ],
                   ),
                 ],

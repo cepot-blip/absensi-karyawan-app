@@ -3,7 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class RegisterApi {
-  final String baseUrl = 'https://401e-103-157-79-110.ngrok-free.app/api/users';
+  final String baseUrl =
+      'https://6a93-114-124-212-162.ngrok-free.app/api/users';
 
   Future<bool> registerUser(
     String email,
@@ -48,7 +49,8 @@ class RegisterApi {
 }
 
 class LoginApi {
-  final String baseUrl = 'https://401e-103-157-79-110.ngrok-free.app/api/users';
+  final String baseUrl =
+      'https://6a93-114-124-212-162.ngrok-free.app/api/users';
 
   Future<bool> loginUser(String email, String password) async {
     try {
